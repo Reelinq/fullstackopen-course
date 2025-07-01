@@ -1,8 +1,10 @@
 import { useState } from 'react'
 
-const Header = ({ header }) => <><h1>{header}</h1></>
+const Header = ({ header }) => <h1>{header}</h1>
 
 const Button = ({ onClick, text }) => <button onClick={onClick} >{text}</button>
+
+const StatisticLine = ({ text, value }) => <p>{text} {value}</p>
 
 const Statistics = ({ header, good, bad, neutral }) => {
 
@@ -19,12 +21,12 @@ const Statistics = ({ header, good, bad, neutral }) => {
   return (
     <div id='statistics'>
         <Header header={header} />
-        <p>good {good}</p>
-        <p>neutral {neutral}</p>
-        <p>bad {bad}</p>
-        <p>all {all}</p>
-        <p>average {(good + bad * -1) / all}</p>
-        <p>positive {good * 100 / all} %</p>
+        <StatisticLine text='good' value={good} />
+        <StatisticLine text='neutral' value={neutral} />
+        <StatisticLine text='bad' value={bad} />
+        <StatisticLine text='all' value={all} />
+        <StatisticLine text='average' value={(good + bad * -1) / all} />
+        <StatisticLine text='positive' value={good * 100 / all + ' %'} />
       </div>
   )
 }
