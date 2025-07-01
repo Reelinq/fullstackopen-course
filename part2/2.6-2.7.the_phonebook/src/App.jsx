@@ -9,10 +9,15 @@ const App = () => {
   const addName = (event) => {
     event.preventDefault()
 
-    if (newName.trim() === '') {
+    if (newName.trim() === '') return
+
+    if (persons.some(
+      person => person.name.toLowerCase() === newName.trim().toLowerCase()
+    )) {
+      alert(`${newName} is already added to phonebook`)
       return
     }
-    
+
     const nameObject = {
       name: newName
     }
