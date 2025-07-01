@@ -8,6 +8,11 @@ const App = () => {
 
   const addName = (event) => {
     event.preventDefault()
+
+    if (newName.trim() === '') {
+      return
+    }
+    
     const nameObject = {
       name: newName
     }
