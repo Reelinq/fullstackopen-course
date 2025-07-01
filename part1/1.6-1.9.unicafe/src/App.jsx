@@ -8,6 +8,14 @@ const Statistics = ({ header, good, bad, neutral }) => {
 
   const all = good + bad + neutral
 
+  if (all === 0) {
+    return (
+      <div id='statistics'>
+        <Header header={header} />
+        <p>no feedback given</p>
+      </div>
+    )
+  }
   return (
     <div id='statistics'>
         <Header header={header} />
