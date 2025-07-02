@@ -31,7 +31,7 @@ const Persons = ({ persons, newSearch }) => {
       {persons
       .filter(person => person.name.toLowerCase().includes(newSearch.toLowerCase()))
       .map(person => (
-        <p key={person.name}>
+        <p key={person.id}>
           {person.name} {person.number}
         </p>
       ))}
@@ -48,9 +48,7 @@ const App = () => {
   useEffect(() => {
     axios
       .get('http://localhost:3001/persons')
-      .then(response => {
-        setPersons(response.data)
-      })
+      .then(response => setPersons(response.data))
   }, [])
 
   const addPerson = (event) => {
@@ -68,14 +66,18 @@ const App = () => {
       return
     }
 
-      const newPerson = {
+    const newPerson = {
       name: newName,
       number: newNumber
     }
-    
-    setPersons(persons.concat(newPerson))
-    setNewName('')
-    setNewNumber('')
+
+    axios
+    .post('http://localhost:3001/persons', newPerson)
+    .then((response) => {
+      setPersons(persons.concat(response.data))
+      setNewName('')
+      setNewNumber('')
+    })
   }
 
   return (
