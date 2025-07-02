@@ -1,43 +1,8 @@
 import { useState, useEffect } from 'react'
 import personService from './services/persons'
-
-const Filter = ({ newSearch, setNewSearch }) => {
-  return (
-    <div>
-      filter shown with: <input value={newSearch} onChange={(event) => setNewSearch(event.target.value)} />
-    </div>
-  )
-}
-
-const PersonForm = ({ addPerson, newName, newNumber, setNewName, setNewNumber }) => {
-  return (
-    <form onSubmit={addPerson}>
-      <div>
-        name: <input value={newName} onChange={(event) => setNewName(event.target.value)} />
-      </div>
-      <div>
-        number: <input value={newNumber} onChange={(event) => setNewNumber(event.target.value)} />
-      </div>
-      <div>
-        <button type="submit">add</button>
-      </div>
-    </form>
-  )
-}
-
-const Persons = ({ persons, newSearch }) => {
-  return (
-    <>
-      {persons
-      .filter(person => person.name.toLowerCase().includes(newSearch.toLowerCase()))
-      .map(person => (
-        <p key={person.id}>
-          {person.name} {person.number}
-        </p>
-      ))}
-    </>
-  )
-}
+import Filter from './components/filter'
+import Persons from './components/Persons'
+import PersonForm from './components/personForm'
 
 const App = () => {
   const [persons, setPersons] = useState([])
@@ -53,7 +18,7 @@ const App = () => {
       })
   }, [])
 
-  const addPerson = (event) => {
+  const addPerson = event => {
     event.preventDefault()
 
     if (newName.trim() === '' || newNumber.trim() === '') return
@@ -82,6 +47,14 @@ const App = () => {
       })
   }
 
+  const removePerson = personId => {
+  personService
+    .remove(personId)
+    .then(() => {
+      setPersons(persons.filter(person => person.id !== personId))
+    })
+  }
+
   return (
     <div>
       <h2>Phonebook</h2>
@@ -89,7 +62,7 @@ const App = () => {
       <h3>add a new</h3>
       <PersonForm addPerson={addPerson} newName={newName} newNumber={newNumber} setNewName={setNewName} setNewNumber={setNewNumber} />
       <h3>Numbers</h3>
-      <Persons persons={persons} newSearch={newSearch} />
+      <Persons persons={persons} newSearch={newSearch} removePerson={removePerson} />
     </div>
   )
 
