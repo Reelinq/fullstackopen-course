@@ -23,8 +23,13 @@ const App = () => {
 
     if (newName.trim() === '' || newNumber.trim() === '') return
 
-    if (persons.some(person => person.name.toLowerCase() === newName.toLowerCase())) {
-      alert(`${newName} is already added to phonebook`)
+    const existingPerson = persons.find(
+      person => person.name.toLowerCase() === newName.toLowerCase()
+    )
+    if (existingPerson) {
+      if (window.confirm(`${newName} is already added to the phonebook, replace the old number with a new one?`)) {
+        updateNumber(existingPerson.id, newNumber)
+      }
       return
     }
 
@@ -52,6 +57,17 @@ const App = () => {
     .remove(personId)
     .then(() => {
       setPersons(persons.filter(person => person.id !== personId))
+    })
+  }
+
+  const updateNumber = (personId, newNumber) => {
+    const person = persons.find(person => person.id === personId)
+    const changedPerson = { ...person, number: newNumber }
+
+    personService
+    .update(personId, changedPerson)
+    .then(data => {
+      setPersons(persons.map(person => person.id !== personId ? person : data))
     })
   }
 
