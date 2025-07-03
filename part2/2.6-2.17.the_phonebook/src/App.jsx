@@ -77,15 +77,25 @@ const App = () => {
     const person = persons.find(person => person.id === personId)
     const changedPerson = { ...person, number: newNumber }
 
+    const updatedPerson = persons.find(person => person.id === personId).name
+
     personService
     .update(personId, changedPerson)
     .then(data => {
       setPersons(persons.map(person => person.id !== personId ? person : data))
-      setMessage(`Modifyed ${persons.find(person => person.id === personId).name}`);
+      setMessage(`Modifyed ${updatedPerson}`);
       setTimeout(() => {
         setMessage(null);
       }, 5000)
-    })
+    }).catch(error => {
+        setMessage(
+          `Information of ${updatedPerson} was already removed from server`
+        )
+        setTimeout(() => {
+          setMessage(null)
+        }, 5000)
+        setPersons(persons.filter(person => person.id !== personId))
+      })
   }
 
   return (
