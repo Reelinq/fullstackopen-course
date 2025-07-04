@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import Weather from './Weather'
 
 const Countries = ({ countries, searchValue, setSearchValue }) => {
 
@@ -36,6 +36,7 @@ const Countries = ({ countries, searchValue, setSearchValue }) => {
           ))}
           </ul>
           <img src={country.flags.png} alt=''></img>
+          <Weather capital={country.capital} />
         </>
       )
     }
