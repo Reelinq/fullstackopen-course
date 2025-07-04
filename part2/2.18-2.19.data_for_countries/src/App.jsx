@@ -17,7 +17,7 @@ const App = () => {
   return (
     <div>
         <div>find countries <input value={searchValue} onChange={(event) => setSearchValue(event.target.value)}/></div>
-        <Countries countries={countries} searchValue={searchValue} />
+        <Countries countries={countries} searchValue={searchValue} setSearchValue={setSearchValue}/>
     </div>
   )
 }
