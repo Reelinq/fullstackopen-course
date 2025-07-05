@@ -3,7 +3,16 @@ const morgan = require('morgan')
 const app = express()
 
 app.use(express.json())
-app.use(morgan('tiny'))
+
+morgan.token('body', (req) => (req.method === 'POST' ? JSON.stringify(req.body) : ''))
+const customFormat = ':method :url :status :res[content-length] - :response-time ms :body'
+app.use((req, res, next) => {
+  if (req.method === 'POST') {
+    morgan(customFormat)(req, res, next)
+  } else {
+    morgan('tiny')(req, res, next)
+  }
+})
 
 let persons = [
     {
