@@ -1,5 +1,8 @@
+require('dotenv').config()
 const express = require('express')
 const morgan = require('morgan')
+const Person = require('./models/person')
+
 const app = express()
 
 app.use(express.static('dist'))
@@ -15,66 +18,34 @@ app.use((req, res, next) => {
   }
 })
 
-let persons = [
-    {
-      id: '1',
-      name: 'Arto Hellas',
-      number: '040-123456'
-    },
-    {
-      id: '2',
-      name: 'Ada Lovelace',
-      number: '39-44-5323523'
-    },
-    {
-      id: '3',
-      name: 'Dan Abramov',
-      number: '12-43-234345'
-    },
-    {
-      id: '4',
-      name: 'Mary Poppendieck',
-      number: '39-23-6423122'
-    }
-  ]
-
 app.get('/api/persons', (request, response) => {
-  response.json(persons)
+  Person.find({}).then(notes => {
+    response.json(notes)
+  })
 })
 
 app.get('/info', (request, response) => {
-  const time = new Date()
-  response.send(`<p>Phonebook has info for ${persons.length} people</p>
-    <p>${time.toString()}</p>`)
+  Person.countDocuments({}).then(count => {
+    const time = new Date()
+    response.send(`<p>Phonebook has info for ${count} people</p>
+      <p>${time.toString()}</p>`)
+  })
 })
 
 app.get('/api/persons/:id', (request, response) => {
-  const id = request.params.id
-  const person = persons.find(person => person.id === id)
-
-  if (person) {
-    response.json(person)
-  } else {
-    response.status(404).end()
-  }
+  Person.findById(request.params.id).then(person => {
+    if (person) {
+      response.json(person)
+    } else {
+      response.status(404).end()
+    }
+  })
 })
 
 app.delete('/api/persons/:id', (request, response) => {
-  const id = request.params.id
-  persons = persons.filter(person => person.id !== id)
-
-  response.status(204).end()
+  Person.deleteOne({ _id: request.params.id })
+    .then(() => {response.status(204).end()})
 })
-
-const generateId = () => {
-  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
-  const getRandomChar = () => {
-    const randChar = characters[Math.floor(Math.random() * characters.length)]
-    return Math.random() < 0.5 ? randChar.toLowerCase() : randChar
-  }
-
-  return Array.from({ length: 4 }, getRandomChar).join('')
-}
 
 app.post('/api/persons', (request, response) => {
   const body = request.body
@@ -91,25 +62,25 @@ app.post('/api/persons', (request, response) => {
     })
   }
 
-  if (persons.find(person => person.name === body.name)) {
-    return response.status(409).json({ 
-      error: 'name already exists' 
-    })
-  }
+  Person.findOne({ name: body.name }).then(existingPerson => {
+    if (existingPerson) {
+      return response.status(409).json({ 
+        error: 'name already exists' 
+      })
+    }
+  })
 
-  const person = {
-    id: generateId(),
+  const person = new Person({
     name: body.name,
     number: body.number
-  }
-  
+  })
 
-  persons = persons.concat(person)
-
-  response.json(person)
+  person.save().then(savedPerson => {
+    response.json(savedPerson)
+  })
 })
 
-const PORT = 3001
+const PORT = process.env.PORT
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
 })
