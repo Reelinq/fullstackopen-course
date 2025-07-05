@@ -43,40 +43,43 @@ app.get('/api/persons/:id', (request, response) => {
 })
 
 app.delete('/api/persons/:id', (request, response) => {
-  Person.deleteOne({ _id: request.params.id })
-    .then(() => {response.status(204).end()})
+  Person.findByIdAndDelete(request.params.id)
+    .then(result => {response.status(204).end()})
 })
 
 app.post('/api/persons', (request, response) => {
   const body = request.body
 
+  let responded = false
+
   if (!body.name) {
-    return response.status(400).json({ 
-      error: 'name missing' 
-    })
+    responded = true
+    return response.status(400).json({ error: 'name missing' })
   }
 
   if (!body.number) {
-    return response.status(400).json({ 
-      error: 'number missing' 
-    })
+    responded = true
+    return response.status(400).json({ error: 'number missing' })
   }
 
   Person.findOne({ name: body.name }).then(existingPerson => {
+    if (responded) return
+
     if (existingPerson) {
-      return response.status(409).json({ 
-        error: 'name already exists' 
-      })
+      responded = true
+      return response.status(409).json({ error: 'name already exists' })
     }
-  })
 
-  const person = new Person({
-    name: body.name,
-    number: body.number
-  })
+    const person = new Person({
+      name: body.name,
+      number: body.number
+    })
 
-  person.save().then(savedPerson => {
-    response.json(savedPerson)
+    person.save().then(savedPerson => {
+      if (responded) return
+      responded = true
+      response.json(savedPerson)
+    })
   })
 })
 
