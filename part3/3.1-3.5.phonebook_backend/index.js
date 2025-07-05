@@ -1,6 +1,8 @@
 const express = require('express')
 const app = express()
 
+app.use(express.json())
+
 let persons = [
     {
       id: '1',
@@ -45,7 +47,6 @@ app.get('/api/persons/:id', (request, response) => {
   }
 })
 
-
 app.delete('/api/persons/:id', (request, response) => {
   const id = request.params.id
   persons = persons.filter(person => person.id !== id)
@@ -53,7 +54,32 @@ app.delete('/api/persons/:id', (request, response) => {
   response.status(204).end()
 })
 
+const generateId = () => {
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
+  const getRandomChar = () => {
+    const randChar = characters[Math.floor(Math.random() * characters.length)]
+    return Math.random() < 0.5 ? randChar.toLowerCase() : randChar
+  }
+
+  return Array.from({ length: 4 }, getRandomChar).join('')
+}
+
+app.post('/api/persons', (request, response) => {
+  const body = request.body
+
+  const person = {
+    id: generateId(),
+    name: body.name,
+    number: body.number
+  }
+
+  persons = persons.concat(person)
+
+  response.json(person)
+})
+
 const PORT = 3001
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
 })
+
