@@ -66,9 +66,9 @@ const App = () => {
     .remove(personId)
     .then(() => {
       setPersons(persons.filter(person => person.id !== personId))
-      setMessage(`Removed ${persons.find(person => person.id === personId).name}`);
+      setMessage(`Removed ${persons.find(person => person.id === personId).name}`)
       setTimeout(() => {
-        setMessage(null);
+        setMessage(null)
       }, 5000)
     })
   }
@@ -83,9 +83,11 @@ const App = () => {
     .update(personId, changedPerson)
     .then(data => {
       setPersons(persons.map(person => person.id !== personId ? person : data))
-      setMessage(`Modifyed ${updatedPerson}`);
+      setMessage(`Modifyed ${updatedPerson}`)
+      setNewName('')
+      setNewNumber('')
       setTimeout(() => {
-        setMessage(null);
+        setMessage(null)
       }, 5000)
     }).catch(error => {
         setMessage(
