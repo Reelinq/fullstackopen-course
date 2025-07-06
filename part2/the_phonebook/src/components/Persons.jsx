@@ -1,5 +1,4 @@
 const Persons = ({ persons, newSearch, removePerson }) => {
-  console.log(persons)
   return (
     <>
       {persons

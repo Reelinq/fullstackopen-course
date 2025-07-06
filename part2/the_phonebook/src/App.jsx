@@ -51,7 +51,9 @@ const App = () => {
         setPersons(persons.concat(returnedPerson))
         setNewName('')
         setNewNumber('')
-      })
+      }).catch(error => {
+      setMessage(JSON.stringify(error.response.data.error).replace(/^"|"$/g, ''))
+    })
 
     setMessage(
       `Added ${newName}`

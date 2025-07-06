@@ -98,13 +98,13 @@ const errorHandler = (error, request, response, next) => {
   console.error(error.message)
 
   if (error.name === 'ValidationError') {
-    return response.status(400).send({ error: error.message })
+    return response.status(400).json({ error: error.message })
   } else if (error.name === 'CastError') {
     return response.status(400).send({ error: 'Malformatted id' })
   } else if (error.name === 'MongoServerError') {
-    return response.status(500).json({ error: 'Database server error' })
+    return response.status(500).send({ error: 'Database server error' })
   } else if (error.name === 'MongoNetworkError') {
-    return response.status(503).json({ error: 'Database connection error' })
+    return response.status(503).send({ error: 'Database connection error' })
   } 
 
   next(error)

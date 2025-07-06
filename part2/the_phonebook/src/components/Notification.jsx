@@ -5,7 +5,7 @@ const Notification = ({ message}) => {
     return null
   }
 
-  if (message.includes('emoved')) {
+  if (message.includes('emoved') || message.includes('failed')) {
   return (
     <div className='deletion'>
       {message}
