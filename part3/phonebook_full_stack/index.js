@@ -40,12 +40,12 @@ app.get('/api/persons/:id', (request, response, next) => {
       response.status(404).end()
     }
   })
-  .catch(error => next(error))
+    .catch(error => next(error))
 })
 
 app.delete('/api/persons/:id', (request, response, next) => {
   Person.findByIdAndDelete(request.params.id)
-    .then(result => {response.status(204).end()})
+    .then(() => {response.status(204).end()})
     .catch(error => next(error))
 })
 
@@ -54,7 +54,7 @@ app.post('/api/persons', (request, response, next) => {
 
   let responded = false
 
-  Person.findOne({ name: body.name }).then(existingPerson => {
+  Person.findOne({ name: body.name }).then(() => {
     if (responded) return
 
     const person = new Person({
@@ -67,11 +67,11 @@ app.post('/api/persons', (request, response, next) => {
       responded = true
       response.json(savedPerson)
     }).catch(error => {
-    if (!responded) {
-      responded = true
-      next(error)
-    }
-  })
+      if (!responded) {
+        responded = true
+        next(error)
+      }
+    })
   })
 })
 
@@ -105,7 +105,7 @@ const errorHandler = (error, request, response, next) => {
     return response.status(500).send({ error: 'Database server error' })
   } else if (error.name === 'MongoNetworkError') {
     return response.status(503).send({ error: 'Database connection error' })
-  } 
+  }
 
   next(error)
 }
