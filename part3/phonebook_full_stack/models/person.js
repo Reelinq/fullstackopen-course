@@ -14,8 +14,22 @@ mongoose.connect(url)
   })
 
 const personSchema = new mongoose.Schema({
-  name: { type: String, required: true, minlength: 3 },
-  number: { type: String, required: true }
+  name: {
+    type: String,
+    required: true,
+    minlength: 3
+  },
+  number: {
+    type: String,
+    required: true,
+    minlength: 8,
+    validate: {
+      validator: function(v) {
+        return /^\d{2,3}-\d+$/.test(v)
+      },
+      message: props => `${props.value} is not a valid phone number! Use format like 12-345678 or 123-45678`
+    }
+  }
 })
 
 personSchema.set('toJSON', {
