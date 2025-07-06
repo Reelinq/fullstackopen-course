@@ -19,8 +19,8 @@ app.use((req, res, next) => {
 })
 
 app.get('/api/persons', (request, response, next) => {
-  Person.find({}).then(notes => {
-    response.json(notes)
+  Person.find({}).then(persons => {
+    response.json(persons)
   }).catch(error => next(error))
 })
 
