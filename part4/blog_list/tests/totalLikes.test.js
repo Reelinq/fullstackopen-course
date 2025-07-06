@@ -55,8 +55,7 @@ describe('total likes', () => {
 ]
 
   test('when list has multiple blogs, equals the sum of likes', () => {
-    const expected = blogs.reduce((sum, blog) => sum + blog.likes, 0)
     const result = listHelper.totalLikes(blogs)
-    assert.strictEqual(result, expected)
+    assert.strictEqual(result, 36)
   })
 })
