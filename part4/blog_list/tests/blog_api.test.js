@@ -36,6 +36,13 @@ test('correct amount of blogs are returned as json', async () => {
   assert.strictEqual(response.body.length, initialBlogs.length)
 })
 
+test('unique identifier property of blog posts is named id', async () => {
+  const response = await api.get('/api/blogs')
+  response.body.forEach(blog => {
+    assert.ok(blog.id, 'Expected blog to have property id')
+  })
+})
+
 after(async () => {
   await mongoose.connection.close()
 })
