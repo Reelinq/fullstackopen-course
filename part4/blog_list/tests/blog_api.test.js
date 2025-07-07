@@ -123,6 +123,51 @@ describe('delete requests', () => {
   })
 })
 
+describe('put requests', () => {
+  test('blog can be updated', async () => {
+
+    const blogsAtStart = await blogsInDb()
+
+    const updatedData = {
+      title: 'Updated title',
+      author: 'Updated author',
+      url: 'updated-url.com',
+      likes: 1000
+    }
+
+    const response = await api
+      .put(`/api/blogs/${blogsAtStart[0].id}`)
+      .send(updatedData)
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+
+    assert.strictEqual(response.body.title, updatedData.title)
+    assert.strictEqual(response.body.author, updatedData.author)
+    assert.strictEqual(response.body.url, updatedData.url)
+    assert.strictEqual(response.body.likes, updatedData.likes)
+
+    const blogsAtEnd = await blogsInDb()
+    const updatedBlog = blogsAtEnd.find(b => b.id === blogsAtStart[0].id)
+    assert.strictEqual(updatedBlog.title, updatedData.title)
+  })
+
+  test('put request on a non-existent blog returns 404', async () => {
+    const validNonexistentId = new mongoose.Types.ObjectId()
+
+    const updatedData = {
+      title: 'Updated title',
+      author: 'Updated author',
+      url: 'updated-url.com',
+      likes: 1000
+    }
+
+    await api
+      .put(`/api/blogs/${validNonexistentId}`)
+      .send(updatedData)
+      .expect(404)
+  })
+})
+
 after(async () => {
   await mongoose.connection.close()
 })
