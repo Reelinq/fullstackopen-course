@@ -83,6 +83,32 @@ test('initial likes is 0', async () => {
   assert.strictEqual(response.body.at(-1).likes, 0)
 })
 
+test('new blog should include title', async () => {
+  const newBlog = {
+    author: 'testAuthor',
+    url: 'testexample.com',
+    likes: 500,
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(400)
+})
+
+test('new blog should include url', async () => {
+  const newBlog = {
+    title: 'testBlog',
+    author: 'testAuthor',
+    likes: 500,
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(400)
+})
+
 after(async () => {
   await mongoose.connection.close()
 })
