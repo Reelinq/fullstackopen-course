@@ -66,6 +66,23 @@ test('new blog can be added with correct values in it', async () => {
   assert(urls.includes('testexample.com'))
 })
 
+test('initial likes is 0', async () => {
+  const newBlog = {
+    title: 'testBlog',
+    author: 'testAuthor',
+    url: 'testexample.com'
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+
+  const response = await api.get('/api/blogs')
+  assert.strictEqual(response.body.at(-1).likes, 0)
+})
+
 after(async () => {
   await mongoose.connection.close()
 })
