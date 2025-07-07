@@ -1,112 +1,126 @@
 const assert = require('node:assert')
-const { test, after, beforeEach } = require('node:test')
+const { test, after, describe, beforeEach } = require('node:test')
 const mongoose = require('mongoose')
 const supertest = require('supertest')
 const app = require('../app')
 const Blog = require('../models/blog')
+const { initialBlogs, blogsInDb } = require('../utils/test_helper')
 
 const api = supertest(app)
-
-const initialBlogs = [
-  {
-    title: 'blogTitle',
-    author: 'blogAuthor',
-    url: 'example.com',
-    likes: 100,
-  },
-  {
-    title: 'anotherBlogTitle',
-    author: 'anotherBlogAuthor',
-    url: 'anotherexample.com',
-    likes: 200,
-  },
-]
 
 beforeEach(async () => {
   await Blog.deleteMany({})
   await Blog.insertMany(initialBlogs)
 })
 
-test('correct amount of blogs are returned as json', async () => {
-  const response = await api
-    .get('/api/blogs')
-    .expect(200)
-    .expect('Content-Type', /application\/json/)
+describe('get requests', () => {
 
-  assert.strictEqual(response.body.length, initialBlogs.length)
-})
+  test('correct amount of blogs are returned as json', async () => {
+    const response = await api
+      .get('/api/blogs')
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
 
-test('unique identifier property of blog posts is named id', async () => {
-  const response = await api.get('/api/blogs')
-  response.body.forEach(blog => {
-    assert.ok(blog.id, 'Expected blog to have property id')
+    assert.strictEqual(response.body.length, initialBlogs.length)
+  })
+
+  test('unique identifier property of blog posts is named id', async () => {
+    const response = await api.get('/api/blogs')
+    response.body.forEach(blog => {
+      assert.ok(blog.id, 'Expected blog to have property id')
+    })
   })
 })
 
-test('new blog can be added with correct values in it', async () => {
-  const newBlog = {
-    title: 'testBlog',
-    author: 'testAuthor',
-    url: 'testexample.com',
-    likes: 500,
-  }
+describe('post requests', () => {
+  test('new blog can be added with correct values in it', async () => {
+    const newBlog = {
+      title: 'testBlog',
+      author: 'testAuthor',
+      url: 'testexample.com',
+      likes: 500,
+    }
 
-  await api
-    .post('/api/blogs')
-    .send(newBlog)
-    .expect(201)
-    .expect('Content-Type', /application\/json/)
+    await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(201)
+      .expect('Content-Type', /application\/json/)
 
-  const response = await api.get('/api/blogs')
+    const response = await api.get('/api/blogs')
 
-  const urls = response.body.map(r => r.url)
+    const urls = response.body.map(r => r.url)
 
-  assert.strictEqual(response.body.length, initialBlogs.length + 1)
+    assert.strictEqual(response.body.length, initialBlogs.length + 1)
 
-  assert(urls.includes('testexample.com'))
+    assert(urls.includes('testexample.com'))
+  })
+
+  test('initial likes is 0', async () => {
+    const newBlog = {
+      title: 'testBlog',
+      author: 'testAuthor',
+      url: 'testexample.com'
+    }
+
+    await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(201)
+      .expect('Content-Type', /application\/json/)
+
+    const response = await api.get('/api/blogs')
+    assert.strictEqual(response.body.at(-1).likes, 0)
+  })
+
+  test('new blog should include title', async () => {
+    const newBlog = {
+      author: 'testAuthor',
+      url: 'testexample.com',
+      likes: 500,
+    }
+
+    await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(400)
+  })
+
+  test('new blog should include url', async () => {
+    const newBlog = {
+      title: 'testBlog',
+      author: 'testAuthor',
+      likes: 500,
+    }
+
+    await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(400)
+  })
 })
 
-test('initial likes is 0', async () => {
-  const newBlog = {
-    title: 'testBlog',
-    author: 'testAuthor',
-    url: 'testexample.com'
-  }
+describe('delete requests', () => {
+  test('blog can be deleted', async () => {
 
-  await api
-    .post('/api/blogs')
-    .send(newBlog)
-    .expect(201)
-    .expect('Content-Type', /application\/json/)
+    const blogsAtStart = await blogsInDb()
 
-  const response = await api.get('/api/blogs')
-  assert.strictEqual(response.body.at(-1).likes, 0)
-})
+    await api.delete(`/api/blogs/${blogsAtStart[0].id}`).expect(204)
 
-test('new blog should include title', async () => {
-  const newBlog = {
-    author: 'testAuthor',
-    url: 'testexample.com',
-    likes: 500,
-  }
+    const blogsAtEnd = await blogsInDb()
+    
+    const urls = blogsAtEnd.map(b => b.url)
+    assert(!urls.includes(blogsAtStart[0].url))
+    assert.strictEqual(blogsAtEnd.length, blogsAtStart.length - 1)
+  })
 
-  await api
-    .post('/api/blogs')
-    .send(newBlog)
-    .expect(400)
-})
+  test('deleting a non-existent blog returns 404', async () => {
+    const validNonexistentId = new mongoose.Types.ObjectId()
 
-test('new blog should include url', async () => {
-  const newBlog = {
-    title: 'testBlog',
-    author: 'testAuthor',
-    likes: 500,
-  }
-
-  await api
-    .post('/api/blogs')
-    .send(newBlog)
-    .expect(400)
+    await api
+      .delete(`/api/blogs/${validNonexistentId}`)
+      .expect(404)
+  })
 })
 
 after(async () => {
