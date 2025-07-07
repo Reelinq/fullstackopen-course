@@ -19,6 +19,8 @@ const errorHandler = (error, request, response, next) => {
     return response.status(400).json({ error: error.message })
   } else if (error.name === 'CastError') {
     return response.status(400).send({ error: 'Malformatted id' })
+  } else if (error.name === 'MongoServerError' && error.code === 11000) {
+    return response.status(400).send({ error: 'username must be unique' })
   } else if (error.name === 'MongoServerError') {
     return response.status(500).send({ error: 'Database server error' })
   } else if (error.name === 'MongoNetworkError') {
