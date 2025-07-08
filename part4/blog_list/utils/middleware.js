@@ -25,6 +25,8 @@ const errorHandler = (error, request, response, next) => {
     return response.status(500).send({ error: 'Database server error' })
   } else if (error.name === 'MongoNetworkError') {
     return response.status(503).send({ error: 'Database connection error' })
+  } else if (error.name === 'JsonWebTokenError') {
+    return response.status(401).json({ error: 'invalid or missing token' })
   }
 
   next(error)
