@@ -1,20 +1,39 @@
+const jwt = require('jsonwebtoken')
 const assert = require('node:assert')
 const { test, after, describe, beforeEach } = require('node:test')
 const mongoose = require('mongoose')
 const supertest = require('supertest')
 const app = require('../app')
 const Blog = require('../models/blog')
-const { initialBlogs, blogsInDb } = require('../utils/test_helper')
+const User = require('../models/user')
+const { initialBlogs, blogsInDb, initialUsers, usersInDb } = require('../utils/test_helper')
 
 const api = supertest(app)
 
+let authToken
+
 beforeEach(async () => {
   await Blog.deleteMany({})
-  await Blog.insertMany(initialBlogs)
+  await User.deleteMany({})
+
+  const insertedUsers = await User.insertMany(initialUsers)
+
+  const user = insertedUsers[0]
+
+  const userForToken = {
+    username: user.username,
+    id: user._id.toString(),
+  }
+  authToken = jwt.sign(userForToken, process.env.SECRET)
+
+  const blogsWithUser = initialBlogs.map(blog => ({
+    ...blog,
+    user: user._id
+  }))
+  await Blog.insertMany(blogsWithUser)
 })
 
 describe('get requests', () => {
-
   test('correct amount of blogs are returned as json', async () => {
     const response = await api
       .get('/api/blogs')
@@ -43,6 +62,7 @@ describe('post requests', () => {
 
     await api
       .post('/api/blogs')
+      .set('Authorization', `Bearer ${authToken}`)
       .send(newBlog)
       .expect(201)
       .expect('Content-Type', /application\/json/)
@@ -65,6 +85,7 @@ describe('post requests', () => {
 
     await api
       .post('/api/blogs')
+      .set('Authorization', `Bearer ${authToken}`)
       .send(newBlog)
       .expect(201)
       .expect('Content-Type', /application\/json/)
@@ -82,6 +103,7 @@ describe('post requests', () => {
 
     await api
       .post('/api/blogs')
+      .set('Authorization', `Bearer ${authToken}`)
       .send(newBlog)
       .expect(400)
   })
@@ -95,20 +117,37 @@ describe('post requests', () => {
 
     await api
       .post('/api/blogs')
+      .set('Authorization', `Bearer ${authToken}`)
       .send(newBlog)
       .expect(400)
+  })
+
+  test('401 if token is not provided', async () => {
+    const newBlog = {
+      title: 'testBlog',
+      author: 'testAuthor',
+      likes: 500,
+    }
+
+    await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(401)
+      .expect('Content-Type', /application\/json/)
   })
 })
 
 describe('delete requests', () => {
   test('blog can be deleted', async () => {
-
     const blogsAtStart = await blogsInDb()
 
-    await api.delete(`/api/blogs/${blogsAtStart[0].id}`).expect(204)
+    await api
+      .delete(`/api/blogs/${blogsAtStart[0].id}`)
+      .set('Authorization', `Bearer ${authToken}`)
+      .expect(204)
 
     const blogsAtEnd = await blogsInDb()
-    
+
     const urls = blogsAtEnd.map(b => b.url)
     assert(!urls.includes(blogsAtStart[0].url))
     assert.strictEqual(blogsAtEnd.length, blogsAtStart.length - 1)
@@ -119,13 +158,13 @@ describe('delete requests', () => {
 
     await api
       .delete(`/api/blogs/${validNonexistentId}`)
+      .set('Authorization', `Bearer ${authToken}`)
       .expect(404)
   })
 })
 
 describe('put requests', () => {
   test('blog can be updated', async () => {
-
     const blogsAtStart = await blogsInDb()
 
     const updatedData = {
