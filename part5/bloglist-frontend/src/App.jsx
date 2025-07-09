@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import Blog from './components/Blog'
 import CreateBlog from './components/CreateBlog'
 import LogIn from './components/LogIn'
@@ -13,7 +13,7 @@ const App = () => {
   const [message, setMessage] = useState(null)
 
   const blogFormRef = useRef()
-  const blogToggleRef = useRef()
+  const blogRefs = useRef({})
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -66,10 +66,19 @@ const App = () => {
         .map(blog => {
           const isCreator = blog.user && (blog.user.id === user.id)
 
+          if (!blogRefs.current[blog.id]) {
+            blogRefs.current[blog.id] = React.createRef()
+          }
+
           return (
             <div key={blog.id} className='blog'>
-              <ExpandBlog blog={blog} ref={blogToggleRef}>
-                <Blog blog={blog} onHide={() => blogToggleRef.current.toggleVisibility()} blogs={blogs} setBlogs={setBlogs}/>
+              <ExpandBlog blog={blog} ref={blogRefs.current[blog.id]}>
+                <Blog
+                  blog={blog}
+                  onHide={() => blogRefs.current[blog.id].current.toggleVisibility()}
+                  blogs={blogs}
+                  setBlogs={setBlogs}
+                />
                 <br />
                 {isCreator && (
                   <button onClick={() => handleDeletion(blog)}>remove</button>
