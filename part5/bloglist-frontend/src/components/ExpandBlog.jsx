@@ -1,7 +1,7 @@
 import { useState, useImperativeHandle, forwardRef } from 'react'
 
-const Togglable = forwardRef(
-  ({ children }, ref) => {
+const ExpandBlog = forwardRef(
+  ({ blog, children }, ref) => {
 
     const [visible, setVisible] = useState(false)
 
@@ -16,16 +16,16 @@ const Togglable = forwardRef(
     return (
       <>
         <span style={{ display: visible ? 'none' : '' }}>
-          <button onClick={toggleVisibility}>create new blog</button>
+          <span>{blog.title} {blog.author}</span>
+          <button onClick={toggleVisibility}>show</button>
         </span>
 
         <span style={{ display: visible ? '' : 'none' }}>
           {children}
-          <button onClick={toggleVisibility}>cancel</button>
         </span>
       </>
     )
   }
 )
 
-export default Togglable
+export default ExpandBlog

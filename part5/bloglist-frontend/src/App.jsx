@@ -5,6 +5,7 @@ import LogIn from './components/LogIn'
 import Togglable from './components/Togglable'
 import blogService from './services/blogs'
 import Notification from './components/Notification'
+import ExpandBlog from './components/ExpandBlog'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -49,7 +50,7 @@ const App = () => {
       <span>{user.name} logged in</span>
       <button onClick={handleLogout}>logout</button>
       <br /><br />
-      <Togglable buttonLabel='create new blog' ref={blogFormRef} showCancel={true}>
+      <Togglable ref={blogFormRef} showCancel={true}>
         <CreateBlog addBlog={addBlog} setMessage={setMessage} blogFormRef={blogFormRef} />
       </Togglable>
 
@@ -59,10 +60,9 @@ const App = () => {
 
           return (
             <div key={blog.id} className='blog'>
-              <span>{blog.title} {blog.author}</span>
-              <Togglable buttonLabel='view' showCancel={false} ref={blogToggleRef}>
+              <ExpandBlog blog={blog} ref={blogToggleRef}>
                 <Blog blog={blog} onHide={() => blogToggleRef.current.toggleVisibility()} blogs={blogs} setBlogs={setBlogs}/>
-              </Togglable>
+              </ExpandBlog>
             </div>
           )
         })
