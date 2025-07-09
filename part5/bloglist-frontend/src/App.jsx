@@ -59,7 +59,7 @@ const App = () => {
           <div key={blog.id} className='blog'>
             <span>{blog.title} {blog.author}</span>
             <Togglable buttonLabel='view' showCancel={false} ref={blogToggleRef}>
-              <Blog blog={blog} onHide={() => blogToggleRef.current.toggleVisibility()} />
+              <Blog blog={blog} onHide={() => blogToggleRef.current.toggleVisibility()} blogs={blogs} setBlogs={setBlogs}/>
             </Togglable>
           </div>
         )
