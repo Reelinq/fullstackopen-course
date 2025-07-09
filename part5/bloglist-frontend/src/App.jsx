@@ -39,6 +39,13 @@ const App = () => {
     setUser(null)
   }
 
+  const handleDeletion = async (blog) => {
+    if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
+      await blogService.remove(blog)
+      setBlogs(blogs.filter(b => b.id !== blog.id))
+    }
+  }
+
   const loginForm = () => (
     <LogIn setUser={setUser} setMessage={setMessage} message={message} />
   )
@@ -57,11 +64,16 @@ const App = () => {
       {[].concat(blogs)
         .sort((a, b) => b.likes - a.likes)
         .map(blog => {
+          const isCreator = blog.user && (blog.user.id === user.id)
 
           return (
             <div key={blog.id} className='blog'>
               <ExpandBlog blog={blog} ref={blogToggleRef}>
                 <Blog blog={blog} onHide={() => blogToggleRef.current.toggleVisibility()} blogs={blogs} setBlogs={setBlogs}/>
+                <br />
+                {isCreator && (
+                  <button onClick={() => handleDeletion(blog)}>remove</button>
+                )}
               </ExpandBlog>
             </div>
           )
