@@ -53,17 +53,20 @@ const App = () => {
         <CreateBlog addBlog={addBlog} setMessage={setMessage} blogFormRef={blogFormRef} />
       </Togglable>
 
-      {blogs.map(blog => {
+      {[].concat(blogs)
+        .sort((a, b) => b.likes - a.likes)
+        .map(blog => {
 
-        return (
-          <div key={blog.id} className='blog'>
-            <span>{blog.title} {blog.author}</span>
-            <Togglable buttonLabel='view' showCancel={false} ref={blogToggleRef}>
-              <Blog blog={blog} onHide={() => blogToggleRef.current.toggleVisibility()} blogs={blogs} setBlogs={setBlogs}/>
-            </Togglable>
-          </div>
-        )
-      })}
+          return (
+            <div key={blog.id} className='blog'>
+              <span>{blog.title} {blog.author}</span>
+              <Togglable buttonLabel='view' showCancel={false} ref={blogToggleRef}>
+                <Blog blog={blog} onHide={() => blogToggleRef.current.toggleVisibility()} blogs={blogs} setBlogs={setBlogs}/>
+              </Togglable>
+            </div>
+          )
+        })
+      }
     </div>
   )
 
