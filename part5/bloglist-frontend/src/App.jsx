@@ -1,7 +1,8 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Blog from './components/Blog'
 import CreateBlog from './components/CreateBlog'
 import LogIn from './components/LogIn'
+import Togglable from './components/Togglable'
 import blogService from './services/blogs'
 import Notification from './components/Notification'
 
@@ -9,6 +10,8 @@ const App = () => {
   const [blogs, setBlogs] = useState([])
   const [user, setUser] = useState(null)
   const [message, setMessage] = useState(null)
+
+  const blogFormRef = useRef()
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -45,7 +48,9 @@ const App = () => {
       <span>{user.name} logged in</span>
       <button onClick={handleLogout}>logout</button>
       <br /><br />
-      <CreateBlog addBlog={addBlog} setMessage={setMessage} />
+      <Togglable buttonLabel='new blog' ref={blogFormRef}>
+        <CreateBlog addBlog={addBlog} setMessage={setMessage} blogFormRef={blogFormRef} />
+      </Togglable>
       {blogs.map(blog =>
         <Blog key={blog.id} blog={blog} />
       )}
