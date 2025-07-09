@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import blogService from '../services/blogs'
 
-const CreateBlog = ( { addBlog } ) => {
+const CreateBlog = ( { addBlog, setMessage } ) => {
   const [title, setTitle] = useState('') 
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
@@ -14,6 +14,10 @@ const CreateBlog = ( { addBlog } ) => {
     setTitle('')
     setAuthor('')
     setUrl('')
+    setMessage(`a new blog ${title} by ${author} added`)
+    setTimeout(() => {
+      setMessage(null)
+    }, 5000)
   }
 
   return (

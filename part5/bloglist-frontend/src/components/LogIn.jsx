@@ -1,8 +1,9 @@
 import { useState } from 'react'
 import loginService from '../services/login'
 import blogService from '../services/blogs'
+import Notification from './Notification'
 
-const LogIn = ({ setUser }) => {
+const LogIn = ({ setUser, setMessage, message }) => {
   const [username, setUsername] = useState('') 
   const [password, setPassword] = useState('')
 
@@ -22,16 +23,17 @@ const LogIn = ({ setUser }) => {
       setUsername('')
       setPassword('')
     } catch (exception) {
-      /*setErrorMessage('wrong credentials')
+      setMessage('wrong username or password')
       setTimeout(() => {
-        setErrorMessage(null)
-      }, 5000)*/
+        setMessage(null)
+      }, 5000)
     }
   }
 
   return (
     <div>
       <h2>Log in to application</h2>
+      <Notification message={message}/>
       <form onSubmit={handleLogin}>
         <div>
           username

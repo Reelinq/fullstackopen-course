@@ -5,9 +5,9 @@ const Notification = ({ message }) => {
     return null
   }
 
-  if (message.includes('emoved') || message.includes('failed') || message.includes('error')){
+  if (message.includes('wrong')){
   return (
-    <div className='deletion'>
+    <div className='info' style={{ color: 'red' }}>
       {message}
     </div>
   )
