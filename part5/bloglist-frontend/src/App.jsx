@@ -12,6 +12,7 @@ const App = () => {
   const [message, setMessage] = useState(null)
 
   const blogFormRef = useRef()
+  const blogToggleRef = useRef()
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -32,7 +33,7 @@ const App = () => {
     setBlogs(blogs.concat(newBlog))
   }
 
-  const handleLogout = async => {
+  const handleLogout = () => {
     window.localStorage.removeItem('loggedBlogappUser')
     setUser(null)
   }
@@ -48,12 +49,21 @@ const App = () => {
       <span>{user.name} logged in</span>
       <button onClick={handleLogout}>logout</button>
       <br /><br />
-      <Togglable buttonLabel='new blog' ref={blogFormRef}>
+      <Togglable buttonLabel='create new blog' ref={blogFormRef} showCancel={true}>
         <CreateBlog addBlog={addBlog} setMessage={setMessage} blogFormRef={blogFormRef} />
       </Togglable>
-      {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} />
-      )}
+
+      {blogs.map(blog => {
+
+        return (
+          <div key={blog.id} className='blog'>
+            <span>{blog.title} {blog.author}</span>
+            <Togglable buttonLabel='view' showCancel={false} ref={blogToggleRef}>
+              <Blog blog={blog} onHide={() => blogToggleRef.current.toggleVisibility()} />
+            </Togglable>
+          </div>
+        )
+      })}
     </div>
   )
 
