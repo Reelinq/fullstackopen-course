@@ -4,6 +4,7 @@ import blogService from '../services/blogs'
 const Blog = ({ blog, onHide, blogs, setBlogs }) => {
   const handleLike = async () => {
     const updated = await blogService.updateLikes(blog)
+    updated.user = blog.user
     setBlogs(blogs.map(b => b.id === updated.id ? updated : b))
   }
 
