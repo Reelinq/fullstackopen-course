@@ -10,6 +10,13 @@ describe('Blog app', () => {
         password: 'salainen'
       }
     })
+		await request.post('http://localhost:3003/api/blogs', {
+      data: {
+        title: 'testBlog',
+        author: 'testAuthor',
+        url: 'testUrl'
+      }
+    })
 
     await page.goto('http://localhost:5173')
   })
@@ -39,14 +46,37 @@ describe('Blog app', () => {
   })
 
 	describe('When logged in', () => {
-		beforeEach(async ({ page }) => {
+		beforeEach(async ({ page, request }) => {
+			const loginResponse = await request.post('http://localhost:3003/api/login', {
+				data: {
+					username: 'mluukkai',
+					password: 'salainen'
+				}
+			})
+
+			const body = await loginResponse.json()
+			const token = body.token
+
+			await request.post('http://localhost:3003/api/blogs', {
+				data: {
+					title: 'testBlog',
+					author: 'testAuthor',
+					url: 'testUrl'
+				},
+				headers: {
+					Authorization: `Bearer ${token}`
+				}
+			})
+
+			await page.goto('http://localhost:5173') //reload the page so newly added blog would appear :)
+
 			await page.getByTestId('username').fill('mluukkai')
 			await page.getByTestId('password').fill('salainen')
 			
 			await page.getByRole('button', { name: 'login' }).click() 
 		})
 
-		test.only('a new blog can be created', async ({ page }) => {
+		test('a new blog can be created', async ({ page }) => {
 			await page.getByRole('button', { name: 'create new blog' }).click()
 
 			await page.getByTestId('title').fill('testTitle')
@@ -56,6 +86,20 @@ describe('Blog app', () => {
 			await page.getByRole('button', { name: 'create' }).click()
 
 			await expect(page.getByText('a new blog testTitle by testAuthor added')).toBeVisible()
+		})
+
+		test('a blog can be liked', async ({ page }) => {
+			await expect(page.locator('span').filter({ hasText: 'testBlog testAuthorshow' }).locator('span')).toBeVisible()
+
+			const showButtons = await page.getByRole('button', { name: 'show' }).all()
+
+    	await showButtons[0].click()
+
+			await expect(page.getByText('likes 0')).toBeVisible()
+			
+			await page.getByRole('button', { name: 'like' }).click()
+
+			await expect(page.getByText('likes 1')).toBeVisible()
 		})
 	})
 })
