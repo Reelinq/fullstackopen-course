@@ -3,6 +3,7 @@ import userEvent from '@testing-library/user-event'
 import { describe, test, expect, vi } from 'vitest'
 import ExpandBlog from './ExpandBlog'
 import Blog from './Blog'
+import blogService from '../services/blogs'
 
 describe('<ExpandBlog />', () => {
   const blog = {
@@ -18,6 +19,7 @@ describe('<ExpandBlog />', () => {
 
   const mockOnHide = vi.fn()
   const mockSetBlogs = vi.fn()
+  vi.mock('../services/blogs')
 
   test('renders title when not expanded', () => {
     render(
@@ -47,5 +49,31 @@ describe('<ExpandBlog />', () => {
     expect(screen.getByText('exampleUrl')).toBeInTheDocument()
     expect(screen.getByText('likes 2')).toBeInTheDocument()
     expect(screen.getByText('Test user')).toBeInTheDocument()
+  })
+
+  test('calls setBlogs twice when like button is clicked twice', async () => {
+    const user = userEvent.setup()
+    const mockSetBlogs = vi.fn()
+
+    blogService.updateLikes.mockResolvedValue({
+      ...blog,
+      likes: blog.likes + 1,
+    })
+
+    render(
+      <ExpandBlog blog={blog}>
+        <Blog blog={blog} onHide={mockOnHide} blogs={[blog]} setBlogs={mockSetBlogs} />
+      </ExpandBlog>
+    )
+
+    const showButton = screen.getByText('show')
+    await user.click(showButton)
+
+    const likeButton = screen.getByText('like')
+    await user.click(likeButton)
+    await user.click(likeButton)
+
+    expect(blogService.updateLikes).toHaveBeenCalledTimes(2)
+    expect(mockSetBlogs).toHaveBeenCalledTimes(2)
   })
 })
