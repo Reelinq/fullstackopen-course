@@ -1,4 +1,5 @@
 import { useState, useImperativeHandle, forwardRef } from 'react'
+import PropTypes from 'prop-types'
 
 const ExpandBlog = forwardRef(
   ({ blog, children }, ref) => {
@@ -27,5 +28,11 @@ const ExpandBlog = forwardRef(
     )
   }
 )
+
+ExpandBlog.propTypes = {
+  blog: PropTypes.object.isRequired
+}
+
+ExpandBlog.displayName = 'ExpandBlog'
 
 export default ExpandBlog

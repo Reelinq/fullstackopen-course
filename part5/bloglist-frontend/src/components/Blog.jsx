@@ -1,5 +1,6 @@
 import '../index.css'
 import blogService from '../services/blogs'
+import PropTypes from 'prop-types'
 
 const Blog = ({ blog, onHide, blogs, setBlogs }) => {
   const handleLike = async () => {
@@ -18,6 +19,13 @@ const Blog = ({ blog, onHide, blogs, setBlogs }) => {
       <span>{blog.user?.name || 'unknown'}</span>
     </>
   )
+}
+
+Blog.propTypes = {
+  blog: PropTypes.object.isRequired,
+  onHide: PropTypes.func.isRequired,
+  blogs: PropTypes.array.isRequired,
+  setBlogs: PropTypes.func.isRequired
 }
 
 export default Blog

@@ -2,9 +2,10 @@ import { useState } from 'react'
 import loginService from '../services/login'
 import blogService from '../services/blogs'
 import Notification from './Notification'
+import PropTypes from 'prop-types'
 
 const LogIn = ({ setUser, setMessage, message }) => {
-  const [username, setUsername] = useState('') 
+  const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
 
   const handleLogin = async (event) => {
@@ -17,7 +18,7 @@ const LogIn = ({ setUser, setMessage, message }) => {
 
       window.localStorage.setItem(
         'loggedBlogappUser', JSON.stringify(user)
-      ) 
+      )
       setUser(user)
       blogService.setToken(user.token)
       setUsername('')
@@ -37,7 +38,7 @@ const LogIn = ({ setUser, setMessage, message }) => {
       <form onSubmit={handleLogin}>
         <div>
           username
-            <input
+          <input
             type="text"
             value={username}
             name="Username"
@@ -46,7 +47,7 @@ const LogIn = ({ setUser, setMessage, message }) => {
         </div>
         <div>
           password
-            <input
+          <input
             type="password"
             value={password}
             name="Password"
@@ -57,6 +58,11 @@ const LogIn = ({ setUser, setMessage, message }) => {
       </form>
     </div>
   )
+}
+
+LogIn.propTypes = {
+  setUser: PropTypes.func.isRequired,
+  setMessage: PropTypes.func.isRequired
 }
 
 export default LogIn
