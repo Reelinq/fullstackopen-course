@@ -16,6 +16,13 @@ const App = () => {
   const blogRefs = useRef({})
 
   useEffect(() => {
+    blogService.getAll().then(blogs => {
+      console.log('blogs from backend:', blogs)
+      setBlogs(blogs)
+    })
+  }, [])
+
+  useEffect(() => {
     blogService.getAll().then(blogs =>
       setBlogs( blogs )
     )
