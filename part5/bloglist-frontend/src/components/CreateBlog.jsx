@@ -17,9 +17,6 @@ const CreateBlog = ( { addBlog, setMessage, blogFormRef } ) => {
     setAuthor('')
     setUrl('')
     setMessage(`a new blog ${title} by ${author} added`)
-    setTimeout(() => {
-      setMessage(null)
-    }, 5000)
   }
 
   return (

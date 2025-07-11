@@ -71,8 +71,8 @@ describe('Blog app', () => {
 
 			await expect(page.locator('span').filter({ hasText: 'testTitle1 testAuthor1show' }).locator('span')).toBeVisible()
 
-			const showButtons1 = await page.getByRole('button', { name: 'show' }).all()
-			await showButtons1[showButtons1.length - 1].click()
+			const showButtons = await page.getByRole('button', { name: 'show' }).all()
+			await showButtons[showButtons.length - 1].click()
 			await expect(page.getByRole('button', { name: 'remove' })).toBeVisible()
 
 			await page.getByRole('button', { name: 'logout' }).click()
@@ -87,6 +87,49 @@ describe('Blog app', () => {
 			const showButtons2 = await page.getByRole('button', { name: 'show' }).all()
 			await showButtons2[showButtons2.length - 1].click()
 			await expect(page.getByRole('button', { name: 'remove' })).not.toBeVisible()
+		})
+
+		test('name of test', async ({ page }) => {
+			test.setTimeout(100000)
+			const blogs = []
+
+			for (let i = 1; i <= 9; i++) {
+				const title = `testTitle${i}`
+				const author = `testAuthor${i}`
+				const url = `testUrl${i}`
+				await helper.createBlog(page, title, author, url)
+				await expect(page.getByText(`testTitle${i} testAuthor${i}show`)).toBeVisible() //this fails
+
+				const lastShowButton = page.getByRole('button', { name: 'show' }).last()
+				await lastShowButton.click()
+
+				blogs.push({ title, author })
+			}
+
+			//open the last one blog as well
+			await page.getByRole('button', { name: 'show' }).click()
+
+			await expect(helper.areBlogsSortedByLikes(page)).toBeTruthy()
+
+			for (const { title, author } of blogs) {
+				const blogLocator = page.locator('.blog', { hasText: `${title} ${author}` })
+ 				const likeButton = blogLocator.getByRole('button', { name: 'like' })
+				await expect(likeButton).toBeVisible()
+
+				let text = await blogLocator.innerText()
+				let match = text.match(/likes\s+(\d+)/)
+				let currentLikesNum = match ? Number(match[1]) : 0
+
+				const likeTimes = Math.floor(Math.random() * 10) + 1
+				console.log(likeTimes)
+				for (let i = 0; i < likeTimes; i++) {
+					await likeButton.click()
+					await expect(blogLocator).toHaveText(new RegExp(`likes\\s+${currentLikesNum + 1}`))
+					currentLikesNum++
+				}
+			}
+
+			await expect(helper.areBlogsSortedByLikes(page)).toBeTruthy()
 		})
 	})
 })

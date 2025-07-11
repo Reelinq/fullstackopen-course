@@ -1,3 +1,7 @@
+import { strict } from 'assert'
+
+const { expect } = require('@playwright/test')
+
 const postUser = async (request, name, username, password)  => {
     await request.post('http://localhost:3003/api/users', {
       data: {
@@ -19,7 +23,24 @@ const createBlog = async (page, title, author, url)  => {
 	await page.getByTestId('title').fill(title)
 	await page.getByTestId('author').fill(author)
 	await page.getByTestId('url').fill(url)
-	await page.getByRole('button', { name: 'create' }).click()
+	await expect(async () => {
+		await page.getByRole('button', { name: 'create' }).click()
+		await expect(page.getByText(`a new blog ${title} by ${author} added`)).toBeVisible()
+	}).toPass({ timeout: 100000 })
 }
 
-export { postUser, loginWith, createBlog }
+const areBlogsSortedByLikes = async (page) => {
+  await page.locator('.blog').first().waitFor({ state: 'visible' })
+	const blogs = await page.locator('.blog').all()
+  const likeCounts = []
+
+  for (const blog of blogs) {
+    const text = await blog.innerText()
+    const match = text.match(/likes\s+(\d+)/)
+    likeCounts.push(Number(match[1]))
+  }
+
+	return likeCounts.every((x, i) => i === 0 || x >= likeCounts[i - 1])
+}
+
+export { postUser, loginWith, createBlog, areBlogsSortedByLikes }

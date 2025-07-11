@@ -15,6 +15,23 @@ const App = () => {
   const blogFormRef = useRef()
   const blogRefs = useRef({})
 
+  const notificationTimeoutId = useRef(null)
+
+  const setTimedMessage = (msg) => {
+    if (notificationTimeoutId.current) {
+      clearTimeout(notificationTimeoutId.current)
+    }
+
+    setMessage(msg)
+
+    if (msg) {
+      notificationTimeoutId.current = setTimeout(() => {
+        setMessage(null)
+        notificationTimeoutId.current = null
+      }, 5000)
+    }
+  }
+
   useEffect(() => {
     blogService.getAll().then(blogs => {
       console.log('blogs from backend:', blogs)
@@ -54,7 +71,7 @@ const App = () => {
   }
 
   const loginForm = () => (
-    <LogIn setUser={setUser} setMessage={setMessage} message={message} />
+    <LogIn setUser={setUser} setMessage={setTimedMessage} message={message} />
   )
 
   const blogForm = () => (
@@ -65,7 +82,7 @@ const App = () => {
       <button onClick={handleLogout}>logout</button>
       <br /><br />
       <Togglable ref={blogFormRef} showCancel={true}>
-        <CreateBlog addBlog={addBlog} setMessage={setMessage} blogFormRef={blogFormRef} />
+        <CreateBlog addBlog={addBlog} setMessage={setTimedMessage} blogFormRef={blogFormRef} />
       </Togglable>
 
       {[].concat(blogs)

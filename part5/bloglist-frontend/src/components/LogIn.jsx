@@ -25,9 +25,6 @@ const LogIn = ({ setUser, setMessage, message }) => {
       setPassword('')
     } catch (exception) {
       setMessage('wrong username or password')
-      setTimeout(() => {
-        setMessage(null)
-      }, 5000)
     }
   }
 
