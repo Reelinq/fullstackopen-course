@@ -17,7 +17,7 @@ export const { createNotification, removeNotification } = notificationSlice.acti
 
 let timeoutId
 
-export const showNotification = (message) => {
+export const setNotification = (message, seconds) => {
   return dispatch => {
 		if (timeoutId) {
       clearTimeout(timeoutId)
@@ -26,7 +26,7 @@ export const showNotification = (message) => {
     timeoutId = setTimeout(() => {
       dispatch(removeNotification())
 			timeoutId = null
-    }, 5000)
+    }, 1000 * seconds)
   }
 }
 
