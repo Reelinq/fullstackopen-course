@@ -4,6 +4,7 @@ import AnecdoteForm from './components/AnecdoteForm'
 import Notification from './components/Notification'
 import { useReducer } from 'react'
 import NotificationContext from './components/NotificationContext'
+import { setNotification } from './notificationHelper'
 
 const App = () => {
   const queryClient = useQueryClient()
@@ -34,10 +35,7 @@ const App = () => {
       ...anecdote,
       votes: anecdote.votes + 1
     })
-    dispatch({ type: 'SET_NOTIFICATION', payload: `anecdote '${anecdote.content}' voted`})
-    setTimeout(() => {
-      dispatch({ type: 'CLEAR_NOTIFICATION' })
-    }, 5000)
+    setNotification(dispatch, `anecdote '${anecdote.content}' voted`)
   }
 
   const result = useQuery({
