@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import axios from 'axios'
 import images from './../assets/weather_icons/images'
 
-const apiKey = import.meta.env.VITE_API_KEY
+const apiKey = 'UC2KT2DDAA4K3H628S28QZHGH'
 
 const Weather = ({ capital }) => {
   const [weather, setWeather] = useState({
