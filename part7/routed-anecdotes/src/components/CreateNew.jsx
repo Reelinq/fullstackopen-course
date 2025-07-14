@@ -1,6 +1,9 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 const CreateNew = ({ addNew }) => {
+	const navigate = useNavigate()
+
   const [content, setContent] = useState('')
   const [author, setAuthor] = useState('')
   const [info, setInfo] = useState('')
@@ -13,6 +16,7 @@ const CreateNew = ({ addNew }) => {
       info,
       votes: 0
     })
+		navigate('/')
   }
 
   return (
