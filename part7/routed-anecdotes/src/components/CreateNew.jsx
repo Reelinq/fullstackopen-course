@@ -1,9 +1,10 @@
-import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useField } from '../hooks'
 
 const CreateNew = ({ addNew }) => {
 	const navigate = useNavigate()
+
+  const [content, author, info] = ['text', 'text', 'text'].map(useField)
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -16,7 +17,12 @@ const CreateNew = ({ addNew }) => {
 		navigate('/')
   }
 
-  const [content, author, info] = ['text', 'text', 'text'].map(useField)
+  const handleReset = (e) => {
+    e.preventDefault()
+    content.reset()
+    author.reset()
+    info.reset()
+  }
 
   return (
     <div>
@@ -35,6 +41,7 @@ const CreateNew = ({ addNew }) => {
           <input  {...info} />
         </div>
         <button>create</button>
+        <button onClick={handleReset}>reset</button>
       </form>
     </div>
   )
