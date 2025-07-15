@@ -6,23 +6,22 @@ import Togglable from './components/Togglable'
 import blogService from './services/blogs'
 import Notification from './components/Notification'
 import ExpandBlog from './components/ExpandBlog'
+import { initializeBlogs } from './reducers/blogsReducer'
+import { useDispatch } from 'react-redux'
+import { useSelector } from 'react-redux'
 
 const App = () => {
-	const [blogs, setBlogs] = useState([])
+	const blogs = useSelector(state => state.blogs)
+	const dispatch = useDispatch()
+
 	const [user, setUser] = useState(null)
 
 	const blogFormRef = useRef()
 	const blogRefs = useRef({})
 
 	useEffect(() => {
-		blogService.getAll().then((blogs) => {
-			setBlogs(blogs)
-		})
-	}, [])
-
-	useEffect(() => {
-		blogService.getAll().then((blogs) => setBlogs(blogs))
-	}, [])
+		dispatch(initializeBlogs())
+	}, [dispatch])
 
 	useEffect(() => {
 		const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
@@ -33,10 +32,6 @@ const App = () => {
 		}
 	}, [])
 
-	const addBlog = (newBlog) => {
-		setBlogs(blogs.concat(newBlog))
-	}
-
 	const handleLogout = () => {
 		window.localStorage.removeItem('loggedBlogappUser')
 		setUser(null)
@@ -45,7 +40,6 @@ const App = () => {
 	const handleDeletion = async (blog) => {
 		if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
 			await blogService.remove(blog)
-			setBlogs(blogs.filter((b) => b.id !== blog.id))
 		}
 	}
 
@@ -60,7 +54,7 @@ const App = () => {
 			<br />
 			<br />
 			<Togglable ref={blogFormRef} showCancel={true}>
-				<CreateBlog addBlog={addBlog} blogFormRef={blogFormRef} />
+				<CreateBlog blogFormRef={blogFormRef} />
 			</Togglable>
 
 			{[]
@@ -81,8 +75,6 @@ const App = () => {
 									onHide={() =>
 										blogRefs.current[blog.id].current.toggleVisibility()
 									}
-									blogs={blogs}
-									setBlogs={setBlogs}
 								/>
 								<br />
 								{isCreator && (

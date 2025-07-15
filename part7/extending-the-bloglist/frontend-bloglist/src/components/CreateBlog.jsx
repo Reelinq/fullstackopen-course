@@ -1,10 +1,10 @@
 import { useState } from 'react'
 import { useDispatch } from 'react-redux'
-import blogService from '../services/blogs'
 import PropTypes from 'prop-types'
 import { setNotification } from '../reducers/notificationReducer'
+import { addBlog } from '../reducers/blogsReducer'
 
-const CreateBlog = ({ addBlog, blogFormRef }) => {
+const CreateBlog = ({ blogFormRef }) => {
 	const dispatch = useDispatch()
 
 	const [title, setTitle] = useState('')
@@ -14,8 +14,7 @@ const CreateBlog = ({ addBlog, blogFormRef }) => {
 	const createBlog = async (event) => {
 		event.preventDefault()
 		const newObject = { title, author, url }
-		const createdBlog = await blogService.create(newObject)
-		addBlog(createdBlog)
+		dispatch(addBlog(newObject))
 		blogFormRef.current.toggleVisibility()
 		setTitle('')
 		setAuthor('')
@@ -64,8 +63,7 @@ const CreateBlog = ({ addBlog, blogFormRef }) => {
 }
 
 CreateBlog.propTypes = {
-	addBlog: PropTypes.func.isRequired,
-	blogFormRef: PropTypes.object.isRequired,
+	blogFormRef: PropTypes.object.isRequired
 }
 
 export default CreateBlog

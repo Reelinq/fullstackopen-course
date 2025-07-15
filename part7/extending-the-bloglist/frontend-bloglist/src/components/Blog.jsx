@@ -2,11 +2,10 @@ import '../index.css'
 import blogService from '../services/blogs'
 import PropTypes from 'prop-types'
 
-const Blog = ({ blog, onHide, blogs, setBlogs }) => {
+const Blog = ({ blog, onHide }) => {
 	const handleLike = async () => {
 		const updated = await blogService.updateLikes(blog)
 		updated.user = blog.user
-		setBlogs(blogs.map((b) => (b.id === updated.id ? updated : b)))
 	}
 
 	return (
@@ -28,9 +27,7 @@ const Blog = ({ blog, onHide, blogs, setBlogs }) => {
 
 Blog.propTypes = {
 	blog: PropTypes.object.isRequired,
-	onHide: PropTypes.func.isRequired,
-	blogs: PropTypes.array.isRequired,
-	setBlogs: PropTypes.func.isRequired,
+	onHide: PropTypes.func.isRequired
 }
 
 export default Blog
