@@ -10,31 +10,12 @@ import ExpandBlog from './components/ExpandBlog'
 const App = () => {
 	const [blogs, setBlogs] = useState([])
 	const [user, setUser] = useState(null)
-	const [message, setMessage] = useState(null)
 
 	const blogFormRef = useRef()
 	const blogRefs = useRef({})
 
-	const notificationTimeoutId = useRef(null)
-
-	const setTimedMessage = (msg) => {
-		if (notificationTimeoutId.current) {
-			clearTimeout(notificationTimeoutId.current)
-		}
-
-		setMessage(msg)
-
-		if (msg) {
-			notificationTimeoutId.current = setTimeout(() => {
-				setMessage(null)
-				notificationTimeoutId.current = null
-			}, 5000)
-		}
-	}
-
 	useEffect(() => {
 		blogService.getAll().then((blogs) => {
-			console.log('blogs from backend:', blogs)
 			setBlogs(blogs)
 		})
 	}, [])
@@ -68,24 +49,18 @@ const App = () => {
 		}
 	}
 
-	const loginForm = () => (
-		<LogIn setUser={setUser} setMessage={setTimedMessage} message={message} />
-	)
+	const loginForm = () => <LogIn setUser={setUser} />
 
 	const blogForm = () => (
 		<div>
 			<h2>blogs</h2>
-			<Notification message={message} />
+			<Notification />
 			<span>{user.name} logged in</span>
 			<button onClick={handleLogout}>logout</button>
 			<br />
 			<br />
 			<Togglable ref={blogFormRef} showCancel={true}>
-				<CreateBlog
-					addBlog={addBlog}
-					setMessage={setTimedMessage}
-					blogFormRef={blogFormRef}
-				/>
+				<CreateBlog addBlog={addBlog} blogFormRef={blogFormRef} />
 			</Togglable>
 
 			{[]

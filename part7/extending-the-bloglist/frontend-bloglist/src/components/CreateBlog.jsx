@@ -1,8 +1,12 @@
 import { useState } from 'react'
+import { useDispatch } from 'react-redux'
 import blogService from '../services/blogs'
 import PropTypes from 'prop-types'
+import { setNotification } from '../reducers/notificationReducer'
 
-const CreateBlog = ({ addBlog, setMessage, blogFormRef }) => {
+const CreateBlog = ({ addBlog, blogFormRef }) => {
+	const dispatch = useDispatch()
+
 	const [title, setTitle] = useState('')
 	const [author, setAuthor] = useState('')
 	const [url, setUrl] = useState('')
@@ -16,7 +20,7 @@ const CreateBlog = ({ addBlog, setMessage, blogFormRef }) => {
 		setTitle('')
 		setAuthor('')
 		setUrl('')
-		setMessage(`a new blog ${title} by ${author} added`)
+		dispatch(setNotification(`a new blog ${title} by ${author} added`))
 	}
 
 	return (
@@ -61,7 +65,6 @@ const CreateBlog = ({ addBlog, setMessage, blogFormRef }) => {
 
 CreateBlog.propTypes = {
 	addBlog: PropTypes.func.isRequired,
-	setMessage: PropTypes.func.isRequired,
 	blogFormRef: PropTypes.object.isRequired,
 }
 

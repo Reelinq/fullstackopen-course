@@ -1,19 +1,19 @@
+import { useSelector } from 'react-redux'
 import '../index.css'
 
-const Notification = ({ message }) => {
-	if (message === null) {
-		return null
-	}
+const Notification = () => {
+	const message = useSelector((state) => state.notification)
 
-	if (message.includes('wrong')) {
-		return (
-			<div className="info" style={{ color: 'red' }}>
-				{message}
-			</div>
-		)
-	} else {
-		return <div className="info">{message}</div>
-	}
+	if (!message) return
+
+	const isError = message.toLowerCase().includes('wrong')
+	const style = { color: isError ? 'red' : 'green' }
+
+	return (
+		<div className="info" style={style}>
+			{message}
+		</div>
+	)
 }
 
 export default Notification

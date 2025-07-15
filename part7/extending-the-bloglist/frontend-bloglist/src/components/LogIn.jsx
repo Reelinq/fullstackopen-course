@@ -1,10 +1,14 @@
 import { useState } from 'react'
+import { useDispatch } from 'react-redux'
 import loginService from '../services/login'
 import blogService from '../services/blogs'
 import Notification from './Notification'
 import PropTypes from 'prop-types'
+import { setNotification } from '../reducers/notificationReducer'
 
-const LogIn = ({ setUser, setMessage, message }) => {
+const LogIn = ({ setUser }) => {
+	const dispatch = useDispatch()
+
 	const [username, setUsername] = useState('')
 	const [password, setPassword] = useState('')
 
@@ -23,14 +27,14 @@ const LogIn = ({ setUser, setMessage, message }) => {
 			setUsername('')
 			setPassword('')
 		} catch (exception) {
-			setMessage('wrong username or password')
+			dispatch(setNotification('wrong username or password'))
 		}
 	}
 
 	return (
 		<div>
 			<h2>Log in to application</h2>
-			<Notification message={message} />
+			<Notification />
 			<form onSubmit={handleLogin}>
 				<div>
 					username
@@ -60,7 +64,6 @@ const LogIn = ({ setUser, setMessage, message }) => {
 
 LogIn.propTypes = {
 	setUser: PropTypes.func.isRequired,
-	setMessage: PropTypes.func.isRequired,
 }
 
 export default LogIn
