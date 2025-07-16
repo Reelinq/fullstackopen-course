@@ -6,7 +6,7 @@ import Togglable from './components/Togglable'
 import blogService from './services/blogs'
 import Notification from './components/Notification'
 import ExpandBlog from './components/ExpandBlog'
-import { initializeBlogs } from './reducers/blogsReducer'
+import { initializeBlogs, removeBlog } from './reducers/blogsReducer'
 import { useDispatch } from 'react-redux'
 import { useSelector } from 'react-redux'
 
@@ -39,7 +39,7 @@ const App = () => {
 
 	const handleDeletion = async (blog) => {
 		if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
-			await blogService.remove(blog)
+			await dispatch(removeBlog(blog))
 		}
 	}
 

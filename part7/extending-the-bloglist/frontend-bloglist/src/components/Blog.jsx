@@ -1,11 +1,13 @@
+import { useDispatch } from 'react-redux'
 import '../index.css'
-import blogService from '../services/blogs'
+import { likeBlog } from '../reducers/blogsReducer'
 import PropTypes from 'prop-types'
 
 const Blog = ({ blog, onHide }) => {
-	const handleLike = async () => {
-		const updated = await blogService.updateLikes(blog)
-		updated.user = blog.user
+	const dispatch = useDispatch()
+
+	const handleLike = () => {
+		dispatch(likeBlog(blog))
 	}
 
 	return (
