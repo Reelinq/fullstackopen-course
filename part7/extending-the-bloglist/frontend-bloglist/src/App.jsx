@@ -1,41 +1,27 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useEffect, useRef } from 'react'
 import Blog from './components/Blog'
 import CreateBlog from './components/CreateBlog'
 import LogIn from './components/LogIn'
 import Togglable from './components/Togglable'
-import blogService from './services/blogs'
 import Notification from './components/Notification'
 import ExpandBlog from './components/ExpandBlog'
 import { initializeBlogs, removeBlog } from './reducers/blogsReducer'
+import { initializeUserFromLocalStorage, logout } from './reducers/userReducer'
 import { useDispatch } from 'react-redux'
 import { useSelector } from 'react-redux'
 
 const App = () => {
 	const blogs = useSelector(state => state.blogs)
+	const user = useSelector(state => state.user)
 	const dispatch = useDispatch()
-
-	const [user, setUser] = useState(null)
 
 	const blogFormRef = useRef()
 	const blogRefs = useRef({})
 
 	useEffect(() => {
+		dispatch(initializeUserFromLocalStorage())
 		dispatch(initializeBlogs())
 	}, [dispatch])
-
-	useEffect(() => {
-		const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
-		if (loggedUserJSON) {
-			const user = JSON.parse(loggedUserJSON)
-			setUser(user)
-			blogService.setToken(user.token)
-		}
-	}, [])
-
-	const handleLogout = () => {
-		window.localStorage.removeItem('loggedBlogappUser')
-		setUser(null)
-	}
 
 	const handleDeletion = async (blog) => {
 		if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
@@ -43,14 +29,14 @@ const App = () => {
 		}
 	}
 
-	const loginForm = () => <LogIn setUser={setUser} />
+	const loginForm = () => <LogIn />
 
 	const blogForm = () => (
 		<div>
 			<h2>blogs</h2>
 			<Notification />
 			<span>{user.name} logged in</span>
-			<button onClick={handleLogout}>logout</button>
+			<button onClick={() => dispatch(logout())}>logout</button>
 			<br />
 			<br />
 			<Togglable ref={blogFormRef} showCancel={true}>
