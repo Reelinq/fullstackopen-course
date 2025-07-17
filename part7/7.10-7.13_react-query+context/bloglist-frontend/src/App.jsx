@@ -10,17 +10,26 @@ import ExpandBlog from './components/ExpandBlog'
 import { setNotification } from './helpers/notificationHelper'
 import NotificationContext from './contexts/notificationContext'
 import notificationReducer from './reducers/notificationReducer'
+import UserContext from './contexts/userContext'
+import userReducer from './reducers/userReducer'
+import { setUser, clearUser } from './helpers/userHelper'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 
 const App = () => {
 	const queryClient = useQueryClient()
-	const [notification, dispatch] = useReducer(notificationReducer, '')
-	const { data: blogs = [], isLoading, error } = useQuery({
+	const [notification, notificationDispatch] = useReducer(
+		notificationReducer,
+		'',
+	)
+	const [user, userDispatch] = useReducer(userReducer, null)
+	const {
+		data: blogs = [],
+		isLoading,
+		error,
+	} = useQuery({
 		queryKey: ['blogs'],
-		queryFn: blogService.getAll
+		queryFn: blogService.getAll,
 	})
-
-	const [user, setUser] = useState(null)
 
 	const blogFormRef = useRef()
 	const blogRefs = useRef({})
@@ -29,15 +38,9 @@ const App = () => {
 		const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
 		if (loggedUserJSON) {
 			const user = JSON.parse(loggedUserJSON)
-			setUser(user)
-			blogService.setToken(user.token)
+			setUser(userDispatch, user)
 		}
 	}, [])
-
-	const handleLogout = () => {
-		window.localStorage.removeItem('loggedBlogappUser')
-		setUser(null)
-	}
 
 	const deleteBlogMutation = useMutation({
 		mutationFn: blogService.remove,
@@ -46,7 +49,7 @@ const App = () => {
 		},
 		onError: (error) => {
 			setNotification(dispatch, `Error deleting blog: ${error.message}`)
-		}
+		},
 	})
 
 	const handleDeletion = async (blog) => {
@@ -55,9 +58,7 @@ const App = () => {
 		}
 	}
 
-	const loginForm = () => (
-		<LogIn setUser={setUser} />
-	)
+	const loginForm = () => <LogIn />
 
 	const blogForm = () => {
 		if (isLoading) return <div>Loading blogs...</div>
@@ -68,27 +69,31 @@ const App = () => {
 				<h2>blogs</h2>
 				<Notification />
 				<span>{user.name} logged in</span>
-				<button onClick={handleLogout}>logout</button>
-				<br /><br />
+				<button onClick={() => clearUser(userDispatch)}>logout</button>
+				<br />
+				<br />
 				<Togglable ref={blogFormRef} showCancel={true}>
 					<CreateBlog blogFormRef={blogFormRef} />
 				</Togglable>
 
-				{[].concat(blogs)
+				{[]
+					.concat(blogs)
 					.sort((a, b) => b.likes - a.likes)
-					.map(blog => {
-						const isCreator = blog.user && (blog.user.id === user.id)
+					.map((blog) => {
+						const isCreator = blog.user && blog.user.id === user.id
 
 						if (!blogRefs.current[blog.id]) {
 							blogRefs.current[blog.id] = React.createRef()
 						}
 
 						return (
-							<div key={blog.id} className='blog'>
+							<div key={blog.id} className="blog">
 								<ExpandBlog blog={blog} ref={blogRefs.current[blog.id]}>
 									<Blog
 										blog={blog}
-										onHide={() => blogRefs.current[blog.id].current.toggleVisibility()}
+										onHide={() =>
+											blogRefs.current[blog.id].current.toggleVisibility()
+										}
 									/>
 									<br />
 									{isCreator && (
@@ -97,19 +102,22 @@ const App = () => {
 								</ExpandBlog>
 							</div>
 						)
-					})
-				}
+					})}
 			</div>
 		)
 	}
 
 	return (
-		<NotificationContext.Provider value={[notification, dispatch]}>
-			<div>
-				{!user && loginForm()}
-				{user && blogForm()}
-			</div>
-		</NotificationContext.Provider>
+		<UserContext.Provider value={[user, userDispatch]}>
+			<NotificationContext.Provider
+				value={[notification, notificationDispatch]}
+			>
+				<div>
+					{!user && loginForm()}
+					{user && blogForm()}
+				</div>
+			</NotificationContext.Provider>
+		</UserContext.Provider>
 	)
 }
 

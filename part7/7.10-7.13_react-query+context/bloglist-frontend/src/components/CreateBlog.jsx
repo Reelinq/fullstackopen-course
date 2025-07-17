@@ -21,11 +21,14 @@ const CreateBlog = ({ blogFormRef }) => {
 			setTitle('')
 			setAuthor('')
 			setUrl('')
-			setNotification(dispatch, `a new blog ${newBlog.title} by ${newBlog.author} added`)
+			setNotification(
+				dispatch,
+				`a new blog ${newBlog.title} by ${newBlog.author} added`,
+			)
 		},
 		onError: (error) => {
 			setNotification(dispatch, `Error creating blog: ${error.message}`)
-		}
+		},
 	})
 
 	const createBlog = async (event) => {
@@ -41,7 +44,7 @@ const CreateBlog = ({ blogFormRef }) => {
 				<div>
 					title:
 					<input
-						data-testid='title'
+						data-testid="title"
 						type="text"
 						value={title}
 						name="Title"
@@ -51,7 +54,7 @@ const CreateBlog = ({ blogFormRef }) => {
 				<div>
 					author
 					<input
-						data-testid='author'
+						data-testid="author"
 						type="text"
 						value={author}
 						name="Author"
@@ -61,7 +64,7 @@ const CreateBlog = ({ blogFormRef }) => {
 				<div>
 					url
 					<input
-						data-testid='url'
+						data-testid="url"
 						type="text"
 						value={url}
 						name="Url"
@@ -75,7 +78,7 @@ const CreateBlog = ({ blogFormRef }) => {
 }
 
 CreateBlog.propTypes = {
-	blogFormRef: PropTypes.object.isRequired
+	blogFormRef: PropTypes.object.isRequired,
 }
 
 export default CreateBlog

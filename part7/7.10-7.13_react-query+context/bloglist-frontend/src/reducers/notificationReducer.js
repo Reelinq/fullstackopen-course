@@ -3,7 +3,7 @@ const notificationReducer = (state, action) => {
 		case 'SET_NOTIFICATION':
 			return action.payload
 		case 'CLEAR_NOTIFICATION':
-			return state = ''
+			return (state = '')
 		default:
 			return state
 	}

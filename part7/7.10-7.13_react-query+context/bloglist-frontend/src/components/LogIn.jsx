@@ -1,13 +1,14 @@
 import { useState, useContext } from 'react'
 import loginService from '../services/login'
-import blogService from '../services/blogs'
 import Notification from './Notification'
-import PropTypes from 'prop-types'
 import NotificationContext from '../contexts/notificationContext'
+import UserContext from '../contexts/userContext'
 import { setNotification } from '../helpers/notificationHelper'
+import { setUser } from '../helpers/userHelper'
 
-const LogIn = ({ setUser }) => {
-	const [notification, dispatch] = useContext(NotificationContext)
+const LogIn = () => {
+	const [notification, notificationDispatch] = useContext(NotificationContext)
+	const [user, userDispatch] = useContext(UserContext)
 
 	const [username, setUsername] = useState('')
 	const [password, setPassword] = useState('')
@@ -17,18 +18,16 @@ const LogIn = ({ setUser }) => {
 
 		try {
 			const user = await loginService.login({
-				username, password,
+				username,
+				password,
 			})
 
-			window.localStorage.setItem(
-				'loggedBlogappUser', JSON.stringify(user)
-			)
-			setUser(user)
-			blogService.setToken(user.token)
+			window.localStorage.setItem('loggedBlogappUser', JSON.stringify(user))
+			setUser(userDispatch, user)
 			setUsername('')
 			setPassword('')
 		} catch (exception) {
-			setNotification(dispatch, 'wrong username or password')
+			setNotification(notificationDispatch, 'wrong username or password')
 		}
 	}
 
@@ -40,7 +39,7 @@ const LogIn = ({ setUser }) => {
 				<div>
 					username
 					<input
-						data-testid='username'
+						data-testid="username"
 						type="text"
 						value={username}
 						name="Username"
@@ -50,7 +49,7 @@ const LogIn = ({ setUser }) => {
 				<div>
 					password
 					<input
-						data-testid='password'
+						data-testid="password"
 						type="password"
 						value={password}
 						name="Password"
@@ -61,10 +60,6 @@ const LogIn = ({ setUser }) => {
 			</form>
 		</div>
 	)
-}
-
-LogIn.propTypes = {
-	setUser: PropTypes.func.isRequired
 }
 
 export default LogIn

@@ -8,16 +8,12 @@ const Notification = () => {
 
 	if (notification.includes('wrong')) {
 		return (
-			<div className='info' style={{ color: 'red' }}>
+			<div className="info" style={{ color: 'red' }}>
 				{notification}
 			</div>
 		)
 	} else {
-		return (
-			<div className='info'>
-				{notification}
-			</div>
-		)
+		return <div className="info">{notification}</div>
 	}
 }
 
