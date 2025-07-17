@@ -1,31 +1,37 @@
 import '../index.css'
 import blogService from '../services/blogs'
 import PropTypes from 'prop-types'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 
-const Blog = ({ blog, onHide, blogs, setBlogs }) => {
-  const handleLike = async () => {
-    const updated = await blogService.updateLikes(blog)
-    updated.user = blog.user
-    setBlogs(blogs.map(b => b.id === updated.id ? updated : b))
-  }
+const Blog = ({ blog, onHide }) => {
+	const queryClient = useQueryClient()
 
-  return (
-    <>
-      <span>{blog.title} {blog.author}</span>
-      <button onClick={onHide}>hide</button><br />
-      <span>{blog.url}</span><br />
-      <span>likes {blog.likes}</span>
-      <button onClick={handleLike}>like</button><br />
-      <span>{blog.user?.name || 'unknown'}</span>
-    </>
-  )
+	const likeMutation = useMutation({
+		mutationFn: blogService.updateLikes,
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ['blogs'] })
+		}
+	})
+
+	const handleLike = async () => {
+		likeMutation.mutate(blog)
+	}
+
+	return (
+		<>
+			<span>{blog.title} {blog.author}</span>
+			<button onClick={onHide}>hide</button><br />
+			<span>{blog.url}</span><br />
+			<span>likes {blog.likes}</span>
+			<button onClick={handleLike}>like</button><br />
+			<span>{blog.user?.name || 'unknown'}</span>
+		</>
+	)
 }
 
 Blog.propTypes = {
-  blog: PropTypes.object.isRequired,
-  onHide: PropTypes.func.isRequired,
-  blogs: PropTypes.array.isRequired,
-  setBlogs: PropTypes.func.isRequired
+	blog: PropTypes.object.isRequired,
+	onHide: PropTypes.func.isRequired
 }
 
 export default Blog

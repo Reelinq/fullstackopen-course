@@ -1,26 +1,37 @@
 import { useState, useContext } from 'react'
 import blogService from '../services/blogs'
 import PropTypes from 'prop-types'
-import NotificationContext from '../notificationContext'
-import { setNotification } from '../notificationHelper'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import NotificationContext from '../contexts/notificationContext'
+import { setNotification } from '../helpers/notificationHelper'
 
-const CreateBlog = ({ addBlog, blogFormRef }) => {
+const CreateBlog = ({ blogFormRef }) => {
 	const [notification, dispatch] = useContext(NotificationContext)
+	const queryClient = useQueryClient()
 
 	const [title, setTitle] = useState('')
 	const [author, setAuthor] = useState('')
 	const [url, setUrl] = useState('')
 
+	const createBlogMutation = useMutation({
+		mutationFn: blogService.create,
+		onSuccess: (newBlog) => {
+			queryClient.invalidateQueries({ queryKey: ['blogs'] })
+			blogFormRef.current.toggleVisibility()
+			setTitle('')
+			setAuthor('')
+			setUrl('')
+			setNotification(dispatch, `a new blog ${newBlog.title} by ${newBlog.author} added`)
+		},
+		onError: (error) => {
+			setNotification(dispatch, `Error creating blog: ${error.message}`)
+		}
+	})
+
 	const createBlog = async (event) => {
 		event.preventDefault()
 		const newObject = { title, author, url }
-		const createdBlog = await blogService.create(newObject)
-		addBlog(createdBlog)
-		blogFormRef.current.toggleVisibility()
-		setTitle('')
-		setAuthor('')
-		setUrl('')
-		setNotification(dispatch, `a new blog ${title} by ${author} added`)
+		createBlogMutation.mutate(newObject)
 	}
 
 	return (
@@ -64,7 +75,6 @@ const CreateBlog = ({ addBlog, blogFormRef }) => {
 }
 
 CreateBlog.propTypes = {
-	addBlog: PropTypes.func.isRequired,
 	blogFormRef: PropTypes.object.isRequired
 }
 

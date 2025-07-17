@@ -3,8 +3,8 @@ import loginService from '../services/login'
 import blogService from '../services/blogs'
 import Notification from './Notification'
 import PropTypes from 'prop-types'
-import NotificationContext from '../notificationContext'
-import { setNotification } from '../notificationHelper'
+import NotificationContext from '../contexts/notificationContext'
+import { setNotification } from '../helpers/notificationHelper'
 
 const LogIn = ({ setUser }) => {
 	const [notification, dispatch] = useContext(NotificationContext)

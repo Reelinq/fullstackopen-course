@@ -7,32 +7,21 @@ import blogService from './services/blogs'
 import { useReducer } from 'react'
 import Notification from './components/Notification'
 import ExpandBlog from './components/ExpandBlog'
-import NotificationContext from './notificationContext'
+import NotificationContext from './contexts/notificationContext'
+import notificationReducer from './reducers/notificationReducer'
+import { useQuery } from '@tanstack/react-query'
 
 const App = () => {
-	const [blogs, setBlogs] = useState([])
+	const [notification, dispatch] = useReducer(notificationReducer, '')
+	const { data: blogs = [], isLoading, error } = useQuery({
+		queryKey: ['blogs'],
+		queryFn: blogService.getAll
+	})
+
 	const [user, setUser] = useState(null)
 
 	const blogFormRef = useRef()
 	const blogRefs = useRef({})
-
-	const notificationReducer = (state, action) => {
-		switch (action.type) {
-			case "SET_NOTIFICATION":
-				return action.payload
-			case "CLEAR_NOTIFICATION":
-				return state = ''
-			default:
-				return state
-		}
-	}
-	const [notification, dispatch] = useReducer(notificationReducer, '')
-
-	useEffect(() => {
-		blogService.getAll().then(blogs => {
-			setBlogs(blogs)
-		})
-	}, [])
 
 	useEffect(() => {
 		const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
@@ -43,10 +32,6 @@ const App = () => {
 		}
 	}, [])
 
-	const addBlog = (newBlog) => {
-		setBlogs(blogs.concat(newBlog))
-	}
-
 	const handleLogout = () => {
 		window.localStorage.removeItem('loggedBlogappUser')
 		setUser(null)
@@ -55,7 +40,6 @@ const App = () => {
 	const handleDeletion = async (blog) => {
 		if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
 			await blogService.remove(blog)
-			setBlogs(blogs.filter(b => b.id !== blog.id))
 		}
 	}
 
@@ -63,46 +47,49 @@ const App = () => {
 		<LogIn setUser={setUser} />
 	)
 
-	const blogForm = () => (
-		<div>
-			<h2>blogs</h2>
-			<Notification />
-			<span>{user.name} logged in</span>
-			<button onClick={handleLogout}>logout</button>
-			<br /><br />
-			<Togglable ref={blogFormRef} showCancel={true}>
-				<CreateBlog addBlog={addBlog} blogFormRef={blogFormRef} />
-			</Togglable>
+	const blogForm = () => {
+		if (isLoading) return <div>Loading blogs...</div>
+		if (error) return <div>Error loading blogs: {error.message}</div>
 
-			{[].concat(blogs)
-				.sort((a, b) => b.likes - a.likes)
-				.map(blog => {
-					const isCreator = blog.user && (blog.user.id === user.id)
+		return (
+			<div>
+				<h2>blogs</h2>
+				<Notification />
+				<span>{user.name} logged in</span>
+				<button onClick={handleLogout}>logout</button>
+				<br /><br />
+				<Togglable ref={blogFormRef} showCancel={true}>
+					<CreateBlog blogFormRef={blogFormRef} />
+				</Togglable>
 
-					if (!blogRefs.current[blog.id]) {
-						blogRefs.current[blog.id] = React.createRef()
-					}
+				{[].concat(blogs)
+					.sort((a, b) => b.likes - a.likes)
+					.map(blog => {
+						const isCreator = blog.user && (blog.user.id === user.id)
 
-					return (
-						<div key={blog.id} className='blog'>
-							<ExpandBlog blog={blog} ref={blogRefs.current[blog.id]}>
-								<Blog
-									blog={blog}
-									onHide={() => blogRefs.current[blog.id].current.toggleVisibility()}
-									blogs={blogs}
-									setBlogs={setBlogs}
-								/>
-								<br />
-								{isCreator && (
-									<button onClick={() => handleDeletion(blog)}>remove</button>
-								)}
-							</ExpandBlog>
-						</div>
-					)
-				})
-			}
-		</div>
-	)
+						if (!blogRefs.current[blog.id]) {
+							blogRefs.current[blog.id] = React.createRef()
+						}
+
+						return (
+							<div key={blog.id} className='blog'>
+								<ExpandBlog blog={blog} ref={blogRefs.current[blog.id]}>
+									<Blog
+										blog={blog}
+										onHide={() => blogRefs.current[blog.id].current.toggleVisibility()}
+									/>
+									<br />
+									{isCreator && (
+										<button onClick={() => handleDeletion(blog)}>remove</button>
+									)}
+								</ExpandBlog>
+							</div>
+						)
+					})
+				}
+			</div>
+		)
+	}
 
 	return (
 		<NotificationContext.Provider value={[notification, dispatch]}>
