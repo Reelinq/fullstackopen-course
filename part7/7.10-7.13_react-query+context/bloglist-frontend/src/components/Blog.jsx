@@ -8,8 +8,11 @@ const Blog = ({ blog, onHide }) => {
 
 	const likeMutation = useMutation({
 		mutationFn: blogService.updateLikes,
-		onSuccess: () => {
+		onSuccess: (updatedBlog) => {
 			queryClient.invalidateQueries({ queryKey: ['blogs'] })
+		},
+		onError: (error) => {
+			setNotification(dispatch, `Error liking blog: ${error.message}`)
 		}
 	})
 

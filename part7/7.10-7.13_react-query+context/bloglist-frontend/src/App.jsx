@@ -7,11 +7,13 @@ import blogService from './services/blogs'
 import { useReducer } from 'react'
 import Notification from './components/Notification'
 import ExpandBlog from './components/ExpandBlog'
+import { setNotification } from './helpers/notificationHelper'
 import NotificationContext from './contexts/notificationContext'
 import notificationReducer from './reducers/notificationReducer'
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 
 const App = () => {
+	const queryClient = useQueryClient()
 	const [notification, dispatch] = useReducer(notificationReducer, '')
 	const { data: blogs = [], isLoading, error } = useQuery({
 		queryKey: ['blogs'],
@@ -37,9 +39,19 @@ const App = () => {
 		setUser(null)
 	}
 
+	const deleteBlogMutation = useMutation({
+		mutationFn: blogService.remove,
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ['blogs'] })
+		},
+		onError: (error) => {
+			setNotification(dispatch, `Error deleting blog: ${error.message}`)
+		}
+	})
+
 	const handleDeletion = async (blog) => {
 		if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
-			await blogService.remove(blog)
+			deleteBlogMutation.mutate(blog)
 		}
 	}
 
