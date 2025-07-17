@@ -1,0 +1,117 @@
+import React, { useState, useEffect, useRef } from 'react'
+import Blog from './components/Blog'
+import CreateBlog from './components/CreateBlog'
+import LogIn from './components/LogIn'
+import Togglable from './components/Togglable'
+import blogService from './services/blogs'
+import { useReducer } from 'react'
+import Notification from './components/Notification'
+import ExpandBlog from './components/ExpandBlog'
+import NotificationContext from './notificationContext'
+
+const App = () => {
+	const [blogs, setBlogs] = useState([])
+	const [user, setUser] = useState(null)
+
+	const blogFormRef = useRef()
+	const blogRefs = useRef({})
+
+	const notificationReducer = (state, action) => {
+		switch (action.type) {
+			case "SET_NOTIFICATION":
+				return action.payload
+			case "CLEAR_NOTIFICATION":
+				return state = ''
+			default:
+				return state
+		}
+	}
+	const [notification, dispatch] = useReducer(notificationReducer, '')
+
+	useEffect(() => {
+		blogService.getAll().then(blogs => {
+			setBlogs(blogs)
+		})
+	}, [])
+
+	useEffect(() => {
+		const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
+		if (loggedUserJSON) {
+			const user = JSON.parse(loggedUserJSON)
+			setUser(user)
+			blogService.setToken(user.token)
+		}
+	}, [])
+
+	const addBlog = (newBlog) => {
+		setBlogs(blogs.concat(newBlog))
+	}
+
+	const handleLogout = () => {
+		window.localStorage.removeItem('loggedBlogappUser')
+		setUser(null)
+	}
+
+	const handleDeletion = async (blog) => {
+		if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
+			await blogService.remove(blog)
+			setBlogs(blogs.filter(b => b.id !== blog.id))
+		}
+	}
+
+	const loginForm = () => (
+		<LogIn setUser={setUser} />
+	)
+
+	const blogForm = () => (
+		<div>
+			<h2>blogs</h2>
+			<Notification />
+			<span>{user.name} logged in</span>
+			<button onClick={handleLogout}>logout</button>
+			<br /><br />
+			<Togglable ref={blogFormRef} showCancel={true}>
+				<CreateBlog addBlog={addBlog} blogFormRef={blogFormRef} />
+			</Togglable>
+
+			{[].concat(blogs)
+				.sort((a, b) => b.likes - a.likes)
+				.map(blog => {
+					const isCreator = blog.user && (blog.user.id === user.id)
+
+					if (!blogRefs.current[blog.id]) {
+						blogRefs.current[blog.id] = React.createRef()
+					}
+
+					return (
+						<div key={blog.id} className='blog'>
+							<ExpandBlog blog={blog} ref={blogRefs.current[blog.id]}>
+								<Blog
+									blog={blog}
+									onHide={() => blogRefs.current[blog.id].current.toggleVisibility()}
+									blogs={blogs}
+									setBlogs={setBlogs}
+								/>
+								<br />
+								{isCreator && (
+									<button onClick={() => handleDeletion(blog)}>remove</button>
+								)}
+							</ExpandBlog>
+						</div>
+					)
+				})
+			}
+		</div>
+	)
+
+	return (
+		<NotificationContext.Provider value={[notification, dispatch]}>
+			<div>
+				{!user && loginForm()}
+				{user && blogForm()}
+			</div>
+		</NotificationContext.Provider>
+	)
+}
+
+export default App
