@@ -1,4 +1,4 @@
-import { createSlice } from '@reduxjs/toolkit'
+import { createSlice, createSelector } from '@reduxjs/toolkit'
 import blogService from '../services/blogs'
 
 const blogSlice = createSlice({
@@ -33,6 +33,11 @@ export const initializeBlogs = () => {
 	}
 }
 
+export const selectSortedBlogs = createSelector(
+	(state) => state.blogs,
+	(blogs) => [...blogs].sort((a, b) => b.likes - a.likes)
+)
+
 export const addBlog = content => {
 	return async dispatch => {
 		const newBlog = await blogService.create(content)
@@ -50,8 +55,10 @@ export const likeBlog = blog => {
 
 export const removeBlog = blog => {
 	return async dispatch => {
-		await blogService.remove(blog)
-		dispatch(removeSelected(blog.id))
+		if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
+			await blogService.remove(blog)
+			dispatch(removeSelected(blog.id))
+		}
 	}
 }
 
