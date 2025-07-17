@@ -3,6 +3,7 @@ import { useDispatch } from 'react-redux'
 import { useSelector } from 'react-redux'
 import LogIn from './components/LogIn'
 import Blogs from './components/Blogs'
+import Users from './components/Users'
 import { initializeBlogs } from './reducers/blogsReducer'
 import { initializeUserFromLocalStorage } from './reducers/userReducer'
 
@@ -20,7 +21,12 @@ const App = () => {
 
 	return (
 		<div>
-			{!user ? <LogIn /> : <Blogs user={user} blogRefs={blogRefs} blogFormRef={blogFormRef} />}
+			{!user ? <LogIn /> :
+				<>
+					<Blogs user={user} blogRefs={blogRefs} blogFormRef={blogFormRef} />
+					<Users />
+				</>
+			}
 		</div>
 	)
 }
