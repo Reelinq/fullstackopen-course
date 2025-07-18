@@ -40,4 +40,9 @@ const remove = async (blog) => {
 	return response.data
 }
 
-export default { getAll, create, setToken, updateLikes, remove }
+const createComment = async (blogId, newObject) => {
+	const response = await axios.post(`${baseUrl}/${blogId}/comments`, newObject)
+	return response.data
+}
+
+export default { getAll, create, setToken, updateLikes, remove, createComment }

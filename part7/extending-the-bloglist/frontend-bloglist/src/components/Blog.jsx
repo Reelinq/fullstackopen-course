@@ -1,13 +1,16 @@
+import { useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { useParams, useNavigate } from 'react-router-dom'
 import PropTypes from 'prop-types'
 import '../index.css'
-import { likeBlog, removeBlog } from '../reducers/blogsReducer'
+import { initializeBlogs, likeBlog, removeBlog, addComment } from '../reducers/blogsReducer'
 import { initializeUsers } from '../reducers/usersReducer'
 
 const Blog = ({ blogs, user }) => {
 	const id = useParams().id
 	const blog = blogs.find(b => b.id === id)
+
+	const [commentContent, setCommentContent] = useState('')
 
 	const dispatch = useDispatch()
 	const navigate = useNavigate()
@@ -18,6 +21,13 @@ const Blog = ({ blogs, user }) => {
 		navigate('/')
 		await dispatch(removeBlog(blog))
 		dispatch(initializeUsers())
+	}
+
+	const handleAddComment = async (event) => {
+		event.preventDefault()
+		await dispatch(addComment(blog.id, commentContent))
+		// dispatch(initializeBlogs())
+		setCommentContent('')
 	}
 
 	if (blogs.length === 0) return <div>Loading...</div>
@@ -37,6 +47,15 @@ const Blog = ({ blogs, user }) => {
 				<button onClick={handleRemove}>remove</button>
 			)}
 			<h3>comments</h3>
+			<form onSubmit={handleAddComment}>
+				<input
+					type="text"
+					value={commentContent}
+					name="commentContent"
+					onChange={({ target }) => setCommentContent(target.value)}
+				/>
+				<button type="submit">add comment</button>
+			</form>
 			{blog.comments.map(comment => {
 				return (
 					<ul key={comment.id}>
