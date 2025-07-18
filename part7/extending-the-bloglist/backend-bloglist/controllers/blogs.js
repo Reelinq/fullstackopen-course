@@ -66,7 +66,7 @@ blogsRouter.post('/:id/comments', async (request, response) => {
 
 	const comment = new Comment({
 		content: content.trim(),
-		blog: blogId
+		blog: blogId,
 	})
 
 	const savedComment = await comment.save()

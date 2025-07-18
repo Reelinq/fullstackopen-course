@@ -3,6 +3,7 @@ import CreateBlog from './CreateBlog'
 import Togglable from './Togglable'
 import { Link } from 'react-router-dom'
 import { selectSortedBlogs } from '../reducers/blogsReducer'
+import { Table } from 'react-bootstrap'
 
 const Blogs = ({ blogFormRef }) => {
 	const blogs = useSelector(selectSortedBlogs)
@@ -12,14 +13,24 @@ const Blogs = ({ blogFormRef }) => {
 			<Togglable ref={blogFormRef} showCancel={true}>
 				<CreateBlog blogFormRef={blogFormRef} />
 			</Togglable>
-
-			{blogs.map((blog) => {
-				return (
-					<div key={blog.id} className="blog">
-						<Link to={`/blogs/${blog.id}`}>{blog.title} {blog.author}</Link>
-					</div>
-				)
-			})}
+			<Table striped>
+				<thead>
+					<tr>
+						<th>Title</th>
+						<th>Author</th>
+					</tr>
+				</thead>
+				<tbody>
+					{blogs.map((blog) => (
+						<tr key={blog.id}>
+							<td>
+								<Link to={`/blogs/${blog.id}`}>{blog.title}</Link>
+							</td>
+							<td>{blog.author}</td>
+						</tr>
+					))}
+				</tbody>
+			</Table>
 		</div>
 	)
 }

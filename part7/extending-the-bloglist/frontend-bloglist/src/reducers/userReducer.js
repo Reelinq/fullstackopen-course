@@ -12,14 +12,14 @@ const userSlice = createSlice({
 		},
 		clearUser() {
 			return null
-		}
-	}
+		},
+	},
 })
 
 export const { setUser, clearUser } = userSlice.actions
 
 export const initializeUserFromLocalStorage = () => {
-	return dispatch => {
+	return (dispatch) => {
 		const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
 		if (loggedUserJSON) {
 			const user = JSON.parse(loggedUserJSON)
@@ -30,7 +30,7 @@ export const initializeUserFromLocalStorage = () => {
 }
 
 export const logout = () => {
-	return dispatch => {
+	return (dispatch) => {
 		window.localStorage.removeItem('loggedBlogappUser')
 		blogService.setToken(null)
 		dispatch(clearUser())
@@ -38,7 +38,7 @@ export const logout = () => {
 }
 
 export const login = (credentials) => {
-	return async dispatch => {
+	return async (dispatch) => {
 		try {
 			const user = await loginService.login(credentials)
 			window.localStorage.setItem('loggedBlogappUser', JSON.stringify(user))
