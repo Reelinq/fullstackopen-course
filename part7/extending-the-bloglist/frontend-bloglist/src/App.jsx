@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react'
 import { useDispatch } from 'react-redux'
 import { useSelector } from 'react-redux'
 import LogIn from './components/LogIn'
+import Blog from './components/Blog'
 import Blogs from './components/Blogs'
 import Users from './components/Users'
 import User from './components/User'
@@ -16,9 +17,9 @@ const App = () => {
 	const dispatch = useDispatch()
 	const user = useSelector(state => state.user)
 	const users = useSelector(state => state.users)
+	const blogs = useSelector(state => state.blogs)
 
 	const blogFormRef = useRef()
-	const blogRefs = useRef({})
 
 	useEffect(() => {
 		dispatch(initializeUserFromLocalStorage())
@@ -39,7 +40,8 @@ const App = () => {
 					<Routes>
 						<Route path="/users/:id" element={<User users={users} />} />
 						<Route path="/users" element={<Users />} />
-						<Route path="/" element={<Blogs user={user} blogRefs={blogRefs} blogFormRef={blogFormRef} />} />
+						<Route path="/" element={<Blogs blogFormRef={blogFormRef} />} />
+						<Route path="/blogs/:id" element={<Blog blogs={blogs} user={user} />} />
 					</Routes>
 				</>
 			)}
