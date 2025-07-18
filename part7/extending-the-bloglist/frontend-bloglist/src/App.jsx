@@ -4,8 +4,11 @@ import { useSelector } from 'react-redux'
 import LogIn from './components/LogIn'
 import Blogs from './components/Blogs'
 import Users from './components/Users'
+import Notification from './components/Notification'
 import { initializeBlogs } from './reducers/blogsReducer'
+import { logout } from './reducers/userReducer'
 import { initializeUserFromLocalStorage } from './reducers/userReducer'
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
 
 const App = () => {
 	const dispatch = useDispatch()
@@ -20,14 +23,22 @@ const App = () => {
 	}, [dispatch])
 
 	return (
-		<div>
-			{!user ? <LogIn /> :
+		<Router>
+			{!user ? (
+				<LogIn />
+			) : (
 				<>
-					<Blogs user={user} blogRefs={blogRefs} blogFormRef={blogFormRef} />
-					<Users />
+					<h2>blogs</h2>
+					<Notification />
+					<span>{user.name} logged in</span>
+					<button onClick={() => dispatch(logout())}>logout</button>
+					<Routes>
+						<Route path="/users" element={<Users />} />
+						<Route path="/" element={<Blogs user={user} blogRefs={blogRefs} blogFormRef={blogFormRef} />} />
+					</Routes>
 				</>
-			}
-		</div>
+			)}
+		</Router>
 	)
 }
 

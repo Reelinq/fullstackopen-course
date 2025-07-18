@@ -1,11 +1,9 @@
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import CreateBlog from './CreateBlog'
-import Notification from './Notification'
 import Blog from './Blog'
 import ExpandBlog from './ExpandBlog'
 import Togglable from './Togglable'
-import { logout } from '../reducers/userReducer'
 import { removeBlog } from '../reducers/blogsReducer'
 import { selectSortedBlogs } from '../reducers/blogsReducer'
 
@@ -15,12 +13,6 @@ const Blogs = ({ user, blogRefs, blogFormRef }) => {
 
 	return (
 		<div>
-			<h2>blogs</h2>
-			<Notification />
-			<span>{user.name} logged in</span>
-			<button onClick={() => dispatch(logout())}>logout</button>
-			<br />
-			<br />
 			<Togglable ref={blogFormRef} showCancel={true}>
 				<CreateBlog blogFormRef={blogFormRef} />
 			</Togglable>
