@@ -1,16 +1,23 @@
 import { useDispatch } from 'react-redux'
-import '../index.css'
-import { likeBlog } from '../reducers/blogsReducer'
+import { useParams, useNavigate } from 'react-router-dom'
 import PropTypes from 'prop-types'
-import { useParams } from 'react-router-dom'
+import '../index.css'
+import { likeBlog, removeBlog } from '../reducers/blogsReducer'
+import { initializeUsers } from '../reducers/usersReducer'
 
 const Blog = ({ blogs, user }) => {
 	const id = useParams().id
 	const blog = blogs.find(b => b.id === id)
 
 	const dispatch = useDispatch()
+	const navigate = useNavigate()
 	const handleLike = () => {
 		dispatch(likeBlog(blog))
+	}
+	const handleRemove = async () => {
+		navigate('/')
+		await dispatch(removeBlog(blog))
+		dispatch(initializeUsers())
 	}
 
 	if (blogs.length === 0) return <div>Loading...</div>
@@ -27,7 +34,7 @@ const Blog = ({ blogs, user }) => {
 			<br />
 			<span>added by {blog.user?.name || 'unknown'}</span>
 			{isCreator && (
-				<button onClick={() => dispatch(removeBlog(blog))}>remove</button>
+				<button onClick={handleRemove}>remove</button>
 			)}
 		</>
 	)

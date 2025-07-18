@@ -3,6 +3,7 @@ import { useDispatch } from 'react-redux'
 import PropTypes from 'prop-types'
 import { setNotification } from '../reducers/notificationReducer'
 import { addBlog } from '../reducers/blogsReducer'
+import { initializeUsers } from '../reducers/usersReducer'
 
 const CreateBlog = ({ blogFormRef }) => {
 	const dispatch = useDispatch()
@@ -14,7 +15,8 @@ const CreateBlog = ({ blogFormRef }) => {
 	const createBlog = async (event) => {
 		event.preventDefault()
 		const newObject = { title, author, url }
-		dispatch(addBlog(newObject))
+		await dispatch(addBlog(newObject))
+		dispatch(initializeUsers())
 		blogFormRef.current.toggleVisibility()
 		setTitle('')
 		setAuthor('')
