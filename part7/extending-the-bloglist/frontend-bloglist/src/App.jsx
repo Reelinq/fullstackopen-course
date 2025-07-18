@@ -4,15 +4,18 @@ import { useSelector } from 'react-redux'
 import LogIn from './components/LogIn'
 import Blogs from './components/Blogs'
 import Users from './components/Users'
+import User from './components/User'
+import { initializeUsers } from './reducers/usersReducer'
 import Notification from './components/Notification'
 import { initializeBlogs } from './reducers/blogsReducer'
 import { logout } from './reducers/userReducer'
 import { initializeUserFromLocalStorage } from './reducers/userReducer'
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 
 const App = () => {
 	const dispatch = useDispatch()
 	const user = useSelector(state => state.user)
+	const users = useSelector(state => state.users)
 
 	const blogFormRef = useRef()
 	const blogRefs = useRef({})
@@ -20,6 +23,7 @@ const App = () => {
 	useEffect(() => {
 		dispatch(initializeUserFromLocalStorage())
 		dispatch(initializeBlogs())
+		dispatch(initializeUsers())
 	}, [dispatch])
 
 	return (
@@ -33,6 +37,7 @@ const App = () => {
 					<span>{user.name} logged in</span>
 					<button onClick={() => dispatch(logout())}>logout</button>
 					<Routes>
+						<Route path="/users/:id" element={<User users={users} />} />
 						<Route path="/users" element={<Users />} />
 						<Route path="/" element={<Blogs user={user} blogRefs={blogRefs} blogFormRef={blogFormRef} />} />
 					</Routes>
