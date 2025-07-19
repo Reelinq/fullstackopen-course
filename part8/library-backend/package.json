@@ -10,5 +10,12 @@
 		"dev": "node --watch library-backend.js",
 		"start": "node library-backend.js",
 		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"dependencies": {
+		"@apollo/server": "^5.0.0",
+		"dotenv": "^17.2.0",
+		"graphql": "^16.11.0",
+		"mongoose": "^7.0.0",
+		"mongoose-unique-validator": "^4.0.1"
 	}
 }
