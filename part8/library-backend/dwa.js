@@ -19,11 +19,11 @@ let authors = [
 		born: 1821
 	},
 	{
-		name: 'Joshua Kerievsky', // birthyear not known
+		name: 'Joshua Kerievsky',
 		id: "afa5b6f2-344d-11e9-a414-719c6709cf3e",
 	},
 	{
-		name: 'Sandi Metz', // birthyear not known
+		name: 'Sandi Metz',
 		id: "afa5b6f3-344d-11e9-a414-719c6709cf3e",
 	},
 ]
@@ -81,37 +81,36 @@ let books = [
 ]
 
 const typeDefs = `
-		type Book {
-			title: String!
-			author: String!
-			published: Int
-			id: ID!
-			genres: [String!]!
-		}
+  type Book {
+    title: String!
+    author: String!
+    published: Int
+    id: ID!
+    genres: [String!]!
+  }
 
-		type Author {
-			name: String!
-			id: ID!
-			born: Int
-			bookCount: Int!
-		}
+  type Author {
+    name: String!
+    id: ID!
+    born: Int
+    bookCount: Int!
+  }
 
-		type Query {
-			bookCount: Int
-			authorCount: Int
-			allBooks(author: String, genre: String): [Book!]!
-			allAuthors: [Author!]!
-		}
+  type Query {
+    bookCount: Int
+    authorCount: Int
+    allBooks(author: String, genre: String): [Book!]!
+    allAuthors: [Author!]!
+  }
 
-		type Mutation {
-			addBook(
-				title: String!
-				author: String!
-				published: Int
-				genres: [String!]!
-			): Book
-		}
-	`
+  type Mutation {
+    addBook(
+      title: String!
+      author: String!
+      published: Int
+      genres: [String!]!
+    ): Book
+`
 
 const resolvers = {
 	Query: {
@@ -129,23 +128,49 @@ const resolvers = {
 		},
 		allAuthors: () => authors,
 	},
+
 	Author: {
 		bookCount: (author) => {
 			return books.filter(book => book.author === author.name).length
 		}
 	},
+
 	Mutation: {
 		addBook: (root, args) => {
-			if (!authors.find(a => a.name === args.author)) {
-				const author = {
+			let author = authors.find(a => a.name === args.author)
+			if (!author) {
+				author = {
 					name: args.author,
 					id: uuid(),
 				}
 				authors = authors.concat(author)
 			}
-			const book = { ...args, id: uuid() }
+
+			const book = {
+				title: args.title,
+				author: args.author,
+				published: args.published,
+				genres: args.genres,
+				id: uuid()
+			}
+
 			books = books.concat(book)
 			return book
+		},
+
+		addAuthor: (root, args) => {
+			if (authors.find(a => a.name === args.name)) {
+				throw new Error(`Author "${args.name}" already exists`)
+			}
+
+			const newAuthor = {
+				name: args.name,
+				born: args.born || null,
+				id: uuid()
+			}
+
+			authors = authors.concat(newAuthor)
+			return newAuthor
 		}
 	}
 }
@@ -158,5 +183,5 @@ const server = new ApolloServer({
 startStandaloneServer(server, {
 	listen: { port: 4000 },
 }).then(({ url }) => {
-	console.log(`Server ready at ${url}`)
+	console.log(`🚀 Server ready at ${url}`)
 })
