@@ -24,7 +24,7 @@ const Books = ({ show }) => {
 	return (
 		<div>
 			<h2>books</h2>
-
+			{selectedGenre ? <p>in genre <b>{selectedGenre}</b></p> : null}
 			<table>
 				<tbody>
 					<tr>
