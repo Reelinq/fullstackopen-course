@@ -1,3 +1,16 @@
+const parseArgumentsExerciseCaluclator = (args: string[]): [days: number[], target: number] => {
+	if (args.length < 4) throw new Error('Not enough arguments')
+
+	const target = Number(args[2])
+	if (isNaN(target)) throw new Error('Provided values were not numbers!')
+
+	const days = args.slice(3).map(day => Number(day))
+	for (const arg of days) {
+		if (isNaN(Number(arg))) throw new Error('Provided values were not numbers!')
+	}
+	return [days, target]
+}
+
 interface MultiplyValues {
 	periodLength: number
 	trainingDays: number
@@ -39,4 +52,5 @@ const calculateExercises = (days: number[], target: number): MultiplyValues => {
 	return MultiplyValues
 }
 
-console.log(calculateExercises([3, 0, 2, 4.5, 0, 3, 1], 2))
+const [days, target] = parseArgumentsExerciseCaluclator(process.argv)
+console.log(calculateExercises(days, target))
