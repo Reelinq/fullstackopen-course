@@ -34,6 +34,13 @@ const NewBook = ({ show }) => {
 			}
 
 			cache.updateQuery({ query: ALL_AUTHORS }, ({ allAuthors }) => {
+				const newAuthor = response.data.addBook.author
+				const authorExists = allAuthors.some(author => author.id === newAuthor.id)
+				if (!authorExists) {
+					return {
+						allAuthors: allAuthors.concat(newAuthor)
+					}
+				}
 				return { allAuthors }
 			})
 		}
