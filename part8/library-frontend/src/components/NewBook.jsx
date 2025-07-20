@@ -15,35 +15,42 @@ const NewBook = ({ show }) => {
 		update: (cache, response) => {
 			cache.updateQuery({ query: ALL_BOOKS }, ({ allBooks }) => {
 				return {
-					allBooks: allBooks.concat(response.data.addBook)
+					allBooks: allBooks.concat(response.data.addBook),
 				}
 			})
 
 			if (userData?.me?.favoriteGenre) {
-				cache.updateQuery({
-					query: ALL_BOOKS,
-					variables: { genre: userData.me.favoriteGenre }
-				}, ({ allBooks }) => {
-					if (response.data.addBook.genres.includes(userData.me.favoriteGenre)) {
-						return {
-							allBooks: allBooks.concat(response.data.addBook)
+				cache.updateQuery(
+					{
+						query: ALL_BOOKS,
+						variables: { genre: userData.me.favoriteGenre },
+					},
+					({ allBooks }) => {
+						if (
+							response.data.addBook.genres.includes(userData.me.favoriteGenre)
+						) {
+							return {
+								allBooks: allBooks.concat(response.data.addBook),
+							}
 						}
-					}
-					return { allBooks }
-				})
+						return { allBooks }
+					},
+				)
 			}
 
 			cache.updateQuery({ query: ALL_AUTHORS }, ({ allAuthors }) => {
 				const newAuthor = response.data.addBook.author
-				const authorExists = allAuthors.some(author => author.id === newAuthor.id)
+				const authorExists = allAuthors.some(
+					(author) => author.id === newAuthor.id,
+				)
 				if (!authorExists) {
 					return {
-						allAuthors: allAuthors.concat(newAuthor)
+						allAuthors: allAuthors.concat(newAuthor),
 					}
 				}
 				return { allAuthors }
 			})
-		}
+		},
 	})
 
 	if (!show) return null
@@ -51,7 +58,9 @@ const NewBook = ({ show }) => {
 	const submit = async (event) => {
 		event.preventDefault()
 
-		createBook({ variables: { title, author, published: Number(published), genres } })
+		createBook({
+			variables: { title, author, published: Number(published), genres },
+		})
 
 		setTitle('')
 		setPublished('')

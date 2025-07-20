@@ -1,17 +1,18 @@
-import { useState } from "react"
-import { ALL_BOOKS } from "../queries"
-import { useQuery } from "@apollo/client"
+import { useState } from 'react'
+import { ALL_BOOKS } from '../queries'
+import { useQuery } from '@apollo/client'
 
 const Books = ({ show }) => {
 	const [selectedGenre, setSelectedGenre] = useState(null)
 
 	const getAllBooks = useQuery(ALL_BOOKS, {
-		variables: selectedGenre ? { genre: selectedGenre } : {}
+		variables: selectedGenre ? { genre: selectedGenre } : {},
 	})
 
 	const getAllBooksForGenres = useQuery(ALL_BOOKS)
-	const allGenres = getAllBooksForGenres.data ?
-		[...new Set(getAllBooksForGenres.data.allBooks.flatMap(b => b.genres))] : []
+	const allGenres = getAllBooksForGenres.data
+		? [...new Set(getAllBooksForGenres.data.allBooks.flatMap((b) => b.genres))]
+		: []
 
 	if (getAllBooks.loading || getAllBooksForGenres.loading) {
 		return <div>loading...</div>
@@ -24,7 +25,11 @@ const Books = ({ show }) => {
 	return (
 		<div>
 			<h2>books</h2>
-			{selectedGenre ? <p>in genre <b>{selectedGenre}</b></p> : null}
+			{selectedGenre ? (
+				<p>
+					in genre <b>{selectedGenre}</b>
+				</p>
+			) : null}
 			<table>
 				<tbody>
 					<tr>
@@ -32,7 +37,7 @@ const Books = ({ show }) => {
 						<th>author</th>
 						<th>published</th>
 					</tr>
-					{books.map(b => (
+					{books.map((b) => (
 						<tr key={b.title}>
 							<td>{b.title}</td>
 							<td>{b.author.name}</td>
@@ -41,14 +46,12 @@ const Books = ({ show }) => {
 					))}
 				</tbody>
 			</table>
-			{allGenres.map(genre => (
+			{allGenres.map((genre) => (
 				<button key={genre} onClick={() => setSelectedGenre(genre)}>
 					{genre}
 				</button>
 			))}
-			<button onClick={() => setSelectedGenre(null)}>
-				all genres
-			</button>
+			<button onClick={() => setSelectedGenre(null)}>all genres</button>
 		</div>
 	)
 }

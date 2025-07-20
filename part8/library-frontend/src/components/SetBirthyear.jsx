@@ -8,14 +8,17 @@ const NewBook = ({ show }) => {
 	const [born, setBorn] = useState('')
 
 	const [changeBirthyear] = useMutation(EDIT_AUTHOR, {
-		refetchQueries: [{ query: ALL_AUTHORS }]
+		refetchQueries: [{ query: ALL_AUTHORS }],
 	})
 
 	const result = useQuery(ALL_AUTHORS)
 	if (result.loading) {
 		return <div>loading...</div>
 	}
-	const authors = result.data.allAuthors.map(a => ({ value: a.name, label: a.name }))
+	const authors = result.data.allAuthors.map((a) => ({
+		value: a.name,
+		label: a.name,
+	}))
 
 	if (!show) return null
 

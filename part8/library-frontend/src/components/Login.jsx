@@ -13,7 +13,7 @@ const Login = ({ show, setToken, setPage }) => {
 			const token = result.data.login.value
 			setToken(token)
 			localStorage.setItem('user-token', token)
-			setPage("authors")
+			setPage('authors')
 		}
 	}, [result.data])
 

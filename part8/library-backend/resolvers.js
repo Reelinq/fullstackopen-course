@@ -27,7 +27,7 @@ const resolvers = {
 	Author: {
 		bookCount: async (author) => {
 			return await Book.countDocuments({ author: author.id })
-		}
+		},
 	},
 	Mutation: {
 		addBook: async (root, args, context) => {
@@ -41,8 +41,8 @@ const resolvers = {
 						extensions: {
 							code: 'BAD_USER_INPUT',
 							invalidArgs: args.author,
-							error
-						}
+							error,
+						},
 					})
 				}
 			}
@@ -50,7 +50,7 @@ const resolvers = {
 				title: args.title,
 				published: args.published,
 				author: author._id,
-				genres: args.genres
+				genres: args.genres,
 			})
 
 			const currentUser = context.currentUser
@@ -58,7 +58,7 @@ const resolvers = {
 				throw new GraphQLError('not authenticated', {
 					extensions: {
 						code: 'BAD_USER_INPUT',
-					}
+					},
 				})
 			}
 
@@ -69,8 +69,8 @@ const resolvers = {
 					extensions: {
 						code: 'BAD_USER_INPUT',
 						invalidArgs: args.title,
-						error
-					}
+						error,
+					},
 				})
 			}
 
@@ -86,7 +86,7 @@ const resolvers = {
 				throw new GraphQLError('not authenticated', {
 					extensions: {
 						code: 'BAD_USER_INPUT',
-					}
+					},
 				})
 			}
 
@@ -94,41 +94,40 @@ const resolvers = {
 				return await Author.findOneAndUpdate(
 					{ name: args.name },
 					{ born: args.setBornTo },
-					{ new: true }
+					{ new: true },
 				)
 			} catch (error) {
 				throw new GraphQLError('Editing author failed', {
 					extensions: {
 						code: 'BAD_USER_INPUT',
 						invalidArgs: args.name,
-						error
-					}
+						error,
+					},
 				})
 			}
 		},
 		createUser: async (root, args) => {
 			const user = new User({
 				username: args.username,
-				favoriteGenre: args.favoriteGenre
+				favoriteGenre: args.favoriteGenre,
 			})
 
-			return user.save()
-				.catch(error => {
-					throw new GraphQLError('Creating the user failed', {
-						extensions: {
-							code: 'BAD_USER_INPUT',
-							invalidArgs: args.username,
-							error
-						}
-					})
+			return user.save().catch((error) => {
+				throw new GraphQLError('Creating the user failed', {
+					extensions: {
+						code: 'BAD_USER_INPUT',
+						invalidArgs: args.username,
+						error,
+					},
 				})
+			})
 		},
 		login: async (root, args) => {
 			const user = await User.findOne({ username: args.username })
 
 			if (!user || args.password !== 'secret') {
 				throw new GraphQLError('wrong credentials', {
-					extensions: { code: 'BAD_USER_INPUT' }
+					extensions: { code: 'BAD_USER_INPUT' },
 				})
 			}
 
@@ -142,7 +141,7 @@ const resolvers = {
 	},
 	Subscription: {
 		bookAdded: {
-			subscribe: () => pubsub.asyncIterableIterator('BOOK_ADDED')
+			subscribe: () => pubsub.asyncIterableIterator('BOOK_ADDED'),
 		},
 	},
 }
