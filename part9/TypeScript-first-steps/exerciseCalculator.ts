@@ -21,7 +21,7 @@ interface MultiplyValues {
 	average: number
 }
 
-const calculateExercises = (days: number[], target: number): MultiplyValues => {
+export const calculateExercises = (days: number[], target: number): MultiplyValues => {
 	const MultiplyValues = {
 		periodLength: days.length,
 		trainingDays: 0,
@@ -52,5 +52,7 @@ const calculateExercises = (days: number[], target: number): MultiplyValues => {
 	return MultiplyValues;
 };
 
-const [days, target] = parseArgumentsExerciseCaluclator(process.argv);
-console.log(calculateExercises(days, target));
+if (require.main === module) {
+	const [days, target] = parseArgumentsExerciseCaluclator(process.argv);
+	console.log(calculateExercises(days, target));
+}
