@@ -22,6 +22,17 @@ app.get('/api/patients', (_req, res) => {
 	res.send(patientService.getNonSensitiveEntries());
 });
 
+app.post('/api/patients', (req, res) => {
+	const { name, dateOfBirth, gender, occupation } = req.body;
+	const addedEntry = patientService.addPatient({
+		name,
+		dateOfBirth,
+		gender,
+		occupation,
+	});
+	res.json(addedEntry);
+});
+
 app.listen(PORT, () => {
 	console.log(`Server running on port ${PORT}`);
 });
