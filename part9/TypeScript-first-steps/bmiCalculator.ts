@@ -12,7 +12,7 @@ const parseArgumentsBMI = (args: string[]): [number, number] => {
 	}
 }
 
-const calculateBmi = (height: number, weight: number): string => {
+export const calculateBmi = (height: number, weight: number): string => {
 	const heightInMeters = height / 100
 	const BMI = weight / (heightInMeters ** 2)
 
@@ -23,8 +23,10 @@ const calculateBmi = (height: number, weight: number): string => {
 	if (BMI < 30) return 'Overweight (Pre-obese)'
 	if (BMI < 35) return 'Obese (Class I)'
 	if (BMI < 40) return 'Obese (Class II)'
-	return 'Obese(Class III)'
+	return 'Obese (Class III)'
 }
 
-const [height, weight] = parseArgumentsBMI(process.argv)
-console.log(calculateBmi(height, weight))
+if (require.main === module) {
+	const [height, weight] = parseArgumentsBMI(process.argv)
+	console.log(calculateBmi(height, weight))
+}
