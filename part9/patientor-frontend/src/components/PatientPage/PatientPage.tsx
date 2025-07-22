@@ -1,7 +1,8 @@
-import { Patient, Diagnosis } from '../types';
+import { Patient, Diagnosis } from '../../types';
 import MaleIcon from '@mui/icons-material/Male';
 import FemaleIcon from '@mui/icons-material/Female';
 import TransgenderIcon from '@mui/icons-material/Transgender';
+import EntryDetails from './EntryDetails';
 
 interface PatientPageProps {
 	patient: Patient | undefined | null
@@ -27,17 +28,8 @@ const PatientPage = ({ patient, diagnoses }: PatientPageProps) => {
 			<p>occupation: {patient.occupation}</p>
 			<h3>entries</h3>
 			{patient.entries.map(entry => (
-				<div key={entry.id}>
-					<p>{entry.date}: {entry.description}</p>
-					{entry.diagnosisCodes && (
-						<ul>
-							{entry.diagnosisCodes.map(code => (
-								<li key={code}>
-									{code} {diagnoses.find(d => d.code === code)?.name || ''}
-								</li>
-							))}
-						</ul>
-					)}
+				<div key={entry.id} style={{ border: '2px solid black', borderRadius: '5px', marginBottom: '1rem' }}>
+					<EntryDetails entry={entry} diagnoses={diagnoses} />
 				</div>
 			))}
 		</div>
