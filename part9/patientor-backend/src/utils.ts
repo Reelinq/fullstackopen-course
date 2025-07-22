@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { Gender } from './types';
+import { Gender, Entry } from './types';
 
 export const newEntrySchema = z.object({
 	name: z.string(),
@@ -7,4 +7,5 @@ export const newEntrySchema = z.object({
 	ssn: z.string().optional(),
 	gender: z.nativeEnum(Gender),
 	occupation: z.string(),
+	entries: z.array(z.custom<Entry>()).default([])
 });

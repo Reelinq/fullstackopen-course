@@ -6,12 +6,13 @@ import { v1 as uuid } from 'uuid';
 const patients: PatientEntry[] = patientData;
 
 const getNonSensitiveEntries = (): NonSensitivePatientEntry[] => {
-	return patients.map(({ id, name, dateOfBirth, gender, occupation }) => ({
+	return patients.map(({ id, name, dateOfBirth, gender, occupation, entries }) => ({
 		id,
 		name,
 		dateOfBirth,
 		gender,
-		occupation
+		occupation,
+		entries
 	}));
 };
 
@@ -25,4 +26,9 @@ const addPatient = (entry: NewPatientEntry): PatientEntry => {
 	return newPatientEntry;
 };
 
-export default { getNonSensitiveEntries, addPatient };
+const findById = (id: string): PatientEntry | undefined => {
+	const entry = patients.find(p => p.id === id);
+	return entry;
+};
+
+export default { getNonSensitiveEntries, addPatient, findById };

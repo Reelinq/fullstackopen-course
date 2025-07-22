@@ -39,6 +39,15 @@ app.post('/api/patients', (req, res) => {
 	}
 });
 
+app.get('/api/patients/:id', (req, res) => {
+	const patient = patientService.findById(String(req.params.id));
+	if (patient) {
+		res.send(patient);
+	} else {
+		res.sendStatus(404);
+	}
+});
+
 app.listen(PORT, () => {
 	console.log(`Server running on port ${PORT}`);
 });
