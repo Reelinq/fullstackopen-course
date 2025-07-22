@@ -49,23 +49,29 @@ const App = () => {
 				<div>
 					date
 					<input
+						type='date'
 						value={newDate}
 						onChange={(event) => setNewDate(event.target.value)}
 					/>
 				</div>
 				<div>
-					weather
-					<input
-						value={newWeather}
-						onChange={(event) => setNewWeather(event.target.value)}
-					/>
+					<fieldset>
+						<legend>weather</legend>
+						<label htmlFor="weatherChoice1">sunny</label> <input type="radio" name="weather" id="weatherChoice1" value="sunny" onChange={(event) => setNewWeather(event.target.value)} />
+						<label htmlFor="weatherChoice2">rainy</label> <input type="radio" name="weather" id="weatherChoice2" value="rainy" onChange={(event) => setNewWeather(event.target.value)} />
+						<label htmlFor="weatherChoice3">cloudy</label> <input type="radio" name="weather" id="weatherChoice3" value="cloudy" onChange={(event) => setNewWeather(event.target.value)} />
+						<label htmlFor="weatherChoice4">stormy</label> <input type="radio" name="weather" id="weatherChoice4" value="stormy" onChange={(event) => setNewWeather(event.target.value)} />
+						<label htmlFor="weatherChoice5">windy</label> <input type="radio" name="weather" id="weatherChoice5" value="windy" onChange={(event) => setNewWeather(event.target.value)} />
+					</fieldset>
 				</div>
 				<div>
-					visibility
-					<input
-						value={newVisibility}
-						onChange={(event) => setNewVisibility(event.target.value)}
-					/>
+					<fieldset>
+						<legend>visibility</legend>
+						<label htmlFor="visibilityChoice1">great</label> <input type="radio" name="visibility" id="visibilityChoice1" value="great" onChange={(event) => setNewVisibility(event.target.value)} />
+						<label htmlFor="visibilityChoice2">good</label> <input type="radio" name="visibility" id="visibilityChoice2" value="good" onChange={(event) => setNewVisibility(event.target.value)} />
+						<label htmlFor="visibilityChoice3">ok</label> <input type="radio" name="visibility" id="visibilityChoice3" value="ok" onChange={(event) => setNewVisibility(event.target.value)} />
+						<label htmlFor="visibilityChoice4">poor</label> <input type="radio" name="visibility" id="visibilityChoice4" value="poor" onChange={(event) => setNewVisibility(event.target.value)} />
+					</fieldset>
 				</div>
 				<div>
 					comment
