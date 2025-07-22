@@ -1,8 +1,9 @@
+import { z } from 'zod';
 import express from 'express';
 import cors from 'cors';
 import diagnoseService from './services/diagnoseService';
 import patientService from './services/patientService';
-import toNewPatientEntry from './utils';
+import { newEntrySchema } from './utils';
 
 const app = express();
 app.use(cors());
@@ -25,16 +26,16 @@ app.get('/api/patients', (_req, res) => {
 
 app.post('/api/patients', (req, res) => {
 	try {
-		const newPatientEntry = toNewPatientEntry(req.body);
+		const newPatientEntry = newEntrySchema.parse(req.body);
 
 		const addedEntry = patientService.addPatient(newPatientEntry);
 		res.json(addedEntry);
 	} catch (error: unknown) {
-		let errorMessage = 'Something went wrong.';
-		if (error instanceof Error) {
-			errorMessage += ' Error: ' + error.message;
+		if (error instanceof z.ZodError) {
+			res.status(400).send({ error: error.issues });
+		} else {
+			res.status(400).send({ error: 'unknown error' });
 		}
-		res.status(400).send(errorMessage);
 	}
 });
 
