@@ -3,7 +3,7 @@ import express from 'express';
 import cors from 'cors';
 import diagnoseService from './services/diagnoseService';
 import patientService from './services/patientService';
-import { newEntrySchema } from './utils';
+import { newEntrySchema, newEntryUnionSchema } from './utils';
 
 const app = express();
 app.use(cors());
@@ -45,6 +45,22 @@ app.get('/api/patients/:id', (req, res) => {
 		res.send(patient);
 	} else {
 		res.sendStatus(404);
+	}
+});
+
+app.post('/api/patients/:id/entries', (req, res) => {
+	try {
+		const patientId = req.params.id;
+		const newEntry = newEntryUnionSchema.parse(req.body);
+
+		const addedEntry = patientService.addEntry(patientId, newEntry);
+		res.json(addedEntry);
+	} catch (error: unknown) {
+		if (error instanceof z.ZodError) {
+			res.status(400).send({ error: error.issues });
+		} else {
+			res.status(400).send({ error: 'unknown error' });
+		}
 	}
 });
 
