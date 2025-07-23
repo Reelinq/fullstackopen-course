@@ -1,24 +1,25 @@
 import { useState } from 'react';
-import { TextField, InputLabel, MenuItem, Select, Grid, Button } from '@mui/material';
+import { TextField, InputLabel, MenuItem, Select, Grid, Button, FormControl, Checkbox, ListItemText } from '@mui/material';
 import { SelectChangeEvent } from '@mui/material/Select';
-import { HealthCheckRating, EntryWithoutId, Entry } from '../../types';
+import { HealthCheckRating, EntryWithoutId, Entry, Diagnosis } from '../../types';
 import patientService from '../../services/patients';
 import axios from 'axios';
 
 type AddEntryProps = {
 	onCancel: React.Dispatch<React.SetStateAction<string>>;
-	patientID: string
+	patientID: string;
 	setError: React.Dispatch<React.SetStateAction<string>>;
 	onEntryAdded: (entry: Entry) => void;
+	diagnoses: Diagnosis[];
 };
 
-const AddHospitalEntry = ({ onCancel, patientID, setError, onEntryAdded }: AddEntryProps) => {
-	const [description, setDesription] = useState('');
+const AddHospitalEntry = ({ onCancel, patientID, setError, onEntryAdded, diagnoses }: AddEntryProps) => {
+	const [description, setDescription] = useState('');
 	const [date, setDate] = useState('');
 	const [specialist, setSpecialist] = useState('');
 	const [dischargeDate, setDischargeDate] = useState('');
 	const [dischargeCriteria, setDischargeCriteria] = useState('');
-	const [diagnosisCodes, setDiagnosisCodes] = useState('');
+	const [diagnosisCodes, setDiagnosisCodes] = useState<string[]>([]);
 
 	const handleSubmit = async (event: React.FormEvent) => {
 		event.preventDefault();
@@ -41,14 +42,18 @@ const AddHospitalEntry = ({ onCancel, patientID, setError, onEntryAdded }: AddEn
 					fullWidth
 					style={{ marginBottom: '1rem' }}
 					value={description}
-					onChange={({ target }) => setDesription(target.value)}
+					onChange={({ target }) => setDescription(target.value)}
 				/>
 				<TextField
 					label="Date"
 					fullWidth
+					type="date"
 					style={{ marginBottom: '1rem' }}
 					value={date}
 					onChange={({ target }) => setDate(target.value)}
+					InputLabelProps={{
+						shrink: true,
+					}}
 				/>
 				<TextField
 					label="Specialist"
@@ -60,9 +65,13 @@ const AddHospitalEntry = ({ onCancel, patientID, setError, onEntryAdded }: AddEn
 				<TextField
 					label="Discharge date"
 					fullWidth
+					type="date"
 					style={{ marginBottom: '1rem' }}
 					value={dischargeDate}
 					onChange={({ target }) => setDischargeDate(target.value)}
+					InputLabelProps={{
+						shrink: true,
+					}}
 				/>
 				<TextField
 					label="Discharge criteria"
@@ -71,13 +80,28 @@ const AddHospitalEntry = ({ onCancel, patientID, setError, onEntryAdded }: AddEn
 					value={dischargeCriteria}
 					onChange={({ target }) => setDischargeCriteria(target.value)}
 				/>
-				<TextField
-					label="Dianosis Codes"
-					fullWidth
-					style={{ marginBottom: '1rem' }}
-					value={diagnosisCodes}
-					onChange={({ target }) => setDiagnosisCodes(target.value)}
-				/>
+				<FormControl fullWidth style={{ marginBottom: '1rem' }}>
+					<InputLabel>Diagnosis Codes</InputLabel>
+					<Select
+						multiple
+						value={diagnosisCodes}
+						onChange={(event) => {
+							const value = event.target.value;
+							setDiagnosisCodes(typeof value === 'string' ? value.split(',') : value);
+						}}
+						renderValue={(selected) => (selected as string[]).join(', ')}
+					>
+						{diagnoses.map((d) => (
+							<MenuItem key={d.code} value={d.code}>
+								<Checkbox checked={diagnosisCodes.includes(d.code)} />
+								<ListItemText
+									primary={`${d.code} | ${d.name}`}
+									secondary={d.latin}
+								/>
+							</MenuItem>
+						))}
+					</Select>
+				</FormControl>
 				<Grid style={{ marginTop: '1rem' }}>
 					<Grid item>
 						<Button
@@ -106,18 +130,18 @@ const AddHospitalEntry = ({ onCancel, patientID, setError, onEntryAdded }: AddEn
 	);
 };
 
-const AddOccupationalHealthcareEntry = ({ onCancel, patientID, setError, onEntryAdded }: AddEntryProps) => {
-	const [description, setDesription] = useState('');
+const AddOccupationalHealthcareEntry = ({ onCancel, patientID, setError, onEntryAdded, diagnoses }: AddEntryProps) => {
+	const [description, setDescription] = useState('');
 	const [date, setDate] = useState('');
 	const [specialist, setSpecialist] = useState('');
 	const [employerName, setEmployerName] = useState('');
 	const [sickLeaveStart, setSickLeaveStart] = useState('');
 	const [sickLeaveEnd, setSickLeaveEnd] = useState('');
-	const [diagnosisCodes, setDiagnosisCodes] = useState('');
+	const [diagnosisCodes, setDiagnosisCodes] = useState<string[]>([]);
 
 	const handleSubmit = async (event: React.FormEvent) => {
 		event.preventDefault();
-		await addEntry("AddOccupationalHealthcare", patientID, {
+		await addEntry("OccupationalHealthcare", patientID, {
 			description,
 			date,
 			specialist,
@@ -137,14 +161,18 @@ const AddOccupationalHealthcareEntry = ({ onCancel, patientID, setError, onEntry
 					fullWidth
 					style={{ marginBottom: '1rem' }}
 					value={description}
-					onChange={({ target }) => setDesription(target.value)}
+					onChange={({ target }) => setDescription(target.value)}
 				/>
 				<TextField
 					label="Date"
 					fullWidth
+					type="date"
 					style={{ marginBottom: '1rem' }}
 					value={date}
 					onChange={({ target }) => setDate(target.value)}
+					InputLabelProps={{
+						shrink: true,
+					}}
 				/>
 				<TextField
 					label="Specialist"
@@ -163,24 +191,47 @@ const AddOccupationalHealthcareEntry = ({ onCancel, patientID, setError, onEntry
 				<TextField
 					label="Start of healthcare"
 					fullWidth
+					type="date"
 					style={{ marginBottom: '1rem' }}
 					value={sickLeaveStart}
 					onChange={({ target }) => setSickLeaveStart(target.value)}
+					InputLabelProps={{
+						shrink: true,
+					}}
 				/>
 				<TextField
 					label="End of healthcare"
 					fullWidth
+					type="date"
 					style={{ marginBottom: '1rem' }}
 					value={sickLeaveEnd}
 					onChange={({ target }) => setSickLeaveEnd(target.value)}
+					InputLabelProps={{
+						shrink: true,
+					}}
 				/>
-				<TextField
-					label="Dianosis Codes"
-					fullWidth
-					style={{ marginBottom: '1rem' }}
-					value={diagnosisCodes}
-					onChange={({ target }) => setDiagnosisCodes(target.value)}
-				/>
+				<FormControl fullWidth style={{ marginBottom: '1rem' }}>
+					<InputLabel>Diagnosis Codes</InputLabel>
+					<Select
+						multiple
+						value={diagnosisCodes}
+						onChange={(event) => {
+							const value = event.target.value;
+							setDiagnosisCodes(typeof value === 'string' ? value.split(',') : value);
+						}}
+						renderValue={(selected) => (selected as string[]).join(', ')}
+					>
+						{diagnoses.map((d) => (
+							<MenuItem key={d.code} value={d.code}>
+								<Checkbox checked={diagnosisCodes.includes(d.code)} />
+								<ListItemText
+									primary={`${d.code} | ${d.name}`}
+									secondary={d.latin}
+								/>
+							</MenuItem>
+						))}
+					</Select>
+				</FormControl>
 				<Grid style={{ marginTop: '1rem' }}>
 					<Grid item>
 						<Button
@@ -220,12 +271,12 @@ const healthCheckRatingOptions: HealthCheckRatingOption[] = Object.values(Health
 		label: HealthCheckRating[v]
 	}));
 
-const AddHealthCheckEntry = ({ onCancel, patientID, setError, onEntryAdded }: AddEntryProps) => {
-	const [description, setDesription] = useState('');
+const AddHealthCheckEntry = ({ onCancel, patientID, setError, onEntryAdded, diagnoses }: AddEntryProps) => {
+	const [description, setDescription] = useState('');
 	const [date, setDate] = useState('');
 	const [specialist, setSpecialist] = useState('');
 	const [healthCheckRating, setHealthCheckRating] = useState<HealthCheckRating | ''>('');
-	const [diagnosisCodes, setDiagnosisCodes] = useState('');
+	const [diagnosisCodes, setDiagnosisCodes] = useState<string[]>([]);
 
 	const onHealthCheckRatingChange = (event: SelectChangeEvent<string>) => {
 		event.preventDefault();
@@ -255,14 +306,18 @@ const AddHealthCheckEntry = ({ onCancel, patientID, setError, onEntryAdded }: Ad
 					fullWidth
 					style={{ marginBottom: '1rem' }}
 					value={description}
-					onChange={({ target }) => setDesription(target.value)}
+					onChange={({ target }) => setDescription(target.value)}
 				/>
 				<TextField
 					label="Date"
 					fullWidth
+					type="date"
 					style={{ marginBottom: '1rem' }}
 					value={date}
 					onChange={({ target }) => setDate(target.value)}
+					InputLabelProps={{
+						shrink: true,
+					}}
 				/>
 				<TextField
 					label="Specialist"
@@ -288,12 +343,28 @@ const AddHealthCheckEntry = ({ onCancel, patientID, setError, onEntryAdded }: Ad
 						</MenuItem>
 					)}
 				</Select>
-				<TextField
-					label="Diagnosis Codes"
-					fullWidth
-					value={diagnosisCodes}
-					onChange={({ target }) => setDiagnosisCodes(target.value)}
-				/>
+				<FormControl fullWidth style={{ marginBottom: '1rem' }}>
+					<InputLabel>Diagnosis Codes</InputLabel>
+					<Select
+						multiple
+						value={diagnosisCodes}
+						onChange={(event) => {
+							const value = event.target.value;
+							setDiagnosisCodes(typeof value === 'string' ? value.split(',') : value);
+						}}
+						renderValue={(selected) => (selected as string[]).join(', ')}
+					>
+						{diagnoses.map((d) => (
+							<MenuItem key={d.code} value={d.code}>
+								<Checkbox checked={diagnosisCodes.includes(d.code)} />
+								<ListItemText
+									primary={`${d.code} | ${d.name}`}
+									secondary={d.latin}
+								/>
+							</MenuItem>
+						))}
+					</Select>
+				</FormControl>
 				<Grid style={{ marginTop: '1rem' }}>
 					<Grid item>
 						<Button
@@ -325,7 +396,7 @@ type EntryData = {
 	description: string;
 	date: string;
 	specialist: string;
-	diagnosisCodes?: string;
+	diagnosisCodes?: string[];
 	dischargeDate?: string;
 	dischargeCriteria?: string;
 	employerName?: string;
@@ -342,10 +413,6 @@ const addEntry = async (
 	onEntryAdded: (entry: Entry) => void,
 	onCancel: React.Dispatch<React.SetStateAction<string>>
 ) => {
-	const diagnosisCodes = data.diagnosisCodes
-		? data.diagnosisCodes.split(',')
-		: [];
-
 	try {
 		let newEntry: Entry;
 
@@ -355,7 +422,7 @@ const addEntry = async (
 				description: data.description,
 				date: data.date,
 				specialist: data.specialist,
-				diagnosisCodes,
+				diagnosisCodes: data.diagnosisCodes,
 				discharge: {
 					date: data.dischargeDate || '',
 					criteria: data.dischargeCriteria || ''
@@ -370,7 +437,7 @@ const addEntry = async (
 				description: data.description,
 				date: data.date,
 				specialist: data.specialist,
-				diagnosisCodes,
+				diagnosisCodes: data.diagnosisCodes,
 				employerName: data.employerName || '',
 				sickLeave: data.sickLeaveStart && data.sickLeaveEnd ? {
 					startDate: data.sickLeaveStart,
@@ -386,7 +453,7 @@ const addEntry = async (
 				description: data.description,
 				date: data.date,
 				specialist: data.specialist,
-				diagnosisCodes,
+				diagnosisCodes: data.diagnosisCodes,
 				healthCheckRating: Number(data.healthCheckRating)
 			};
 			newEntry = await patientService.createEntry(patientID, entry);
@@ -407,18 +474,19 @@ type EntryFormProps = {
 	type: string;
 	onCancel: React.Dispatch<React.SetStateAction<string>>;
 	patientID: string;
-	setError: React.Dispatch<React.SetStateAction<string>>
+	setError: React.Dispatch<React.SetStateAction<string>>;
 	onEntryAdded: (entry: Entry) => void;
+	diagnoses: Diagnosis[];
 };
 
-const EntryForm = ({ type, onCancel, patientID, setError, onEntryAdded }: EntryFormProps) => {
+const EntryForm = ({ type, onCancel, patientID, setError, onEntryAdded, diagnoses }: EntryFormProps) => {
 	switch (type) {
 		case "Hospital":
-			return <AddHospitalEntry onCancel={onCancel} patientID={patientID} setError={setError} onEntryAdded={onEntryAdded} />;
+			return <AddHospitalEntry onCancel={onCancel} patientID={patientID} setError={setError} onEntryAdded={onEntryAdded} diagnoses={diagnoses} />;
 		case "OccupationalHealthcare":
-			return <AddOccupationalHealthcareEntry onCancel={onCancel} patientID={patientID} setError={setError} onEntryAdded={onEntryAdded} />;
+			return <AddOccupationalHealthcareEntry onCancel={onCancel} patientID={patientID} setError={setError} onEntryAdded={onEntryAdded} diagnoses={diagnoses} />;
 		case "HealthCheck":
-			return <AddHealthCheckEntry onCancel={onCancel} patientID={patientID} setError={setError} onEntryAdded={onEntryAdded} />;
+			return <AddHealthCheckEntry onCancel={onCancel} patientID={patientID} setError={setError} onEntryAdded={onEntryAdded} diagnoses={diagnoses} />;
 		default:
 			throw new Error(`EntryForm: Invalid entry type "${type}". Expected one of: Hospital, OccupationalHealthcare, HealthCheck`);
 	}

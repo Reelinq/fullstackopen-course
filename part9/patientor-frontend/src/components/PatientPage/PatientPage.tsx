@@ -101,7 +101,7 @@ const PatientPage = ({ patient, diagnoses, setPatients }: PatientPageProps) => {
 			<Notification message={error} onClear={setError} />
 
 			{newEntryFormVisible && (
-				<EntryForm type={newEntryFormVisible} onCancel={setNewEntryFormVisible} patientID={patient.id} setError={setError} onEntryAdded={handleEntryAdded} />
+				<EntryForm type={newEntryFormVisible} onCancel={setNewEntryFormVisible} patientID={patient.id} setError={setError} onEntryAdded={handleEntryAdded} diagnoses={diagnoses} />
 			)}
 		</div>
 	);
