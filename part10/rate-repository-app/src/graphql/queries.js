@@ -30,3 +30,12 @@ export const LOGIN = gql`
 		}
 	}
 `;
+
+export const CHECK_USER = gql`
+	query Me {
+		me {
+			id
+			username
+		}
+	}
+`;
