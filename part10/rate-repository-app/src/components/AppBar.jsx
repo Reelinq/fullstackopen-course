@@ -9,11 +9,8 @@ const styles = StyleSheet.create({
 		backgroundColor: theme.colors.Bar,
 	},
 	content: {
-		height: 50,
-		display: 'flex',
-		flexDirection: 'row',
-		alignItems: 'center',
-		justifyContent: 'space-around',
+		height: 60,
+		...theme.position.spaceAroundHorisontalFlex,
 	},
 	item: {
 		flexGrow: 0,

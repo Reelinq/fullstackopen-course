@@ -1,4 +1,5 @@
 {
+	"type": "module",
 	"name": "rate-repository-app",
 	"version": "1.0.0",
 	"main": "expo/AppEntry.js",

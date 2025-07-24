@@ -4,7 +4,7 @@ import theme from '../theme';
 const styles = StyleSheet.create({
 	text: {
 		fontWeight: 'bold',
-		color: theme.colors.Text,
+		color: theme.colors.BarText,
 	}
 });
 
