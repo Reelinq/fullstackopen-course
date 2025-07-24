@@ -45,7 +45,6 @@ const theme = {
 			borderColor: '#586069',
 			padding: 10,
 			borderRadius: 5,
-			marginBottom: 10,
 		}
 	}
 }
