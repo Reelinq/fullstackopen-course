@@ -6,7 +6,7 @@ import theme from '../theme';
 const styles = StyleSheet.create({
 	container: {
 		paddingTop: Constants.statusBarHeight,
-		backgroundColor: theme.colors.Bar,
+		backgroundColor: theme.colors.bar,
 	},
 	content: {
 		height: 60,
@@ -21,7 +21,8 @@ const AppBar = () => {
 	return (
 		<View style={styles.container}>
 			<View style={styles.content}>
-				<AppBarTab content={"Repositories"} style={styles.item} />
+				<AppBarTab content={"Repositories"} endpoint={'/'} style={styles.item} />
+				<AppBarTab content={"Sign In"} endpoint={'/signin'} style={styles.item} />
 			</View>
 		</View>
 	);

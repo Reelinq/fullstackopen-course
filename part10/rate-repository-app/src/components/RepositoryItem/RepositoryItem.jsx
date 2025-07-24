@@ -1,12 +1,12 @@
 import { View, StyleSheet } from 'react-native'
-import theme from '../theme'
+import theme from '../../theme'
 import RepositoryItemStats from './RepositoryItemStats'
 import RepositoryItemInfo from './RepositoryItemInfo'
 import RepositoryItemImage from './RepositoryItemImage'
 
 const styles = StyleSheet.create({
 	repositoryItem: {
-		backgroundColor: theme.colors.RepositoryItemBackground,
+		backgroundColor: theme.colors.repositoryItemBackground,
 		padding: 15,
 	},
 	imageInfoContainer: {

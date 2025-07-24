@@ -1,5 +1,6 @@
-import { View, Text, StyleSheet } from 'react-native';
-import theme from '../theme';
+import { View, StyleSheet } from 'react-native';
+import theme from '../../theme';
+import Text from '../Text'
 
 const formatStatCount = (count) => {
 	if (count >= 1000) {
@@ -17,11 +18,9 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 	},
 	statsBoldText: {
-		...theme.texts.boldText,
 		textAlign: 'center',
 	},
 	statsText: {
-		...theme.texts.Text,
 		textAlign: 'center',
 	}
 });
@@ -29,20 +28,20 @@ const styles = StyleSheet.create({
 const RepositoryItemStats = ({ stargazersCount, forksCount, reviewCount, ratingAverage }) => (
 	<View style={styles.stats}>
 		<View style={styles.statsItem}>
-			<Text style={styles.statsBoldText}>{formatStatCount(stargazersCount)}</Text>
-			<Text style={styles.statsText}>Stars</Text>
+			<Text textWeight="bold" style={styles.statsBoldText}>{formatStatCount(stargazersCount)}</Text>
+			<Text textFont="small" style={styles.statsText}>Stars</Text>
 		</View>
 		<View style={styles.statsItem}>
-			<Text style={styles.statsBoldText}>{formatStatCount(forksCount)}</Text>
-			<Text style={styles.statsText}>Forks</Text>
+			<Text textWeight="bold" style={styles.statsBoldText}>{formatStatCount(forksCount)}</Text>
+			<Text textFont="small" style={styles.statsText}>Forks</Text>
 		</View>
 		<View style={styles.statsItem}>
-			<Text style={styles.statsBoldText}>{formatStatCount(reviewCount)}</Text>
-			<Text style={styles.statsText}>Reviews</Text>
+			<Text textWeight="bold" style={styles.statsBoldText}>{formatStatCount(reviewCount)}</Text>
+			<Text textFont="small" style={styles.statsText}>Reviews</Text>
 		</View>
 		<View style={styles.statsItem}>
-			<Text style={styles.statsBoldText}>{formatStatCount(ratingAverage)}</Text>
-			<Text style={styles.statsText}>Rating</Text>
+			<Text textWeight="bold" style={styles.statsBoldText}>{formatStatCount(ratingAverage)}</Text>
+			<Text textFont="small" style={styles.statsText}>Rating</Text>
 		</View>
 	</View>
 );
