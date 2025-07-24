@@ -1,5 +1,6 @@
-import { View, TextInput, Button, StyleSheet, Text } from 'react-native'
+import { View, TextInput, Button, StyleSheet } from 'react-native'
 import { Formik } from 'formik'
+import Text from './Text';
 import theme from '../theme'
 import * as yup from 'yup';
 
@@ -24,9 +25,6 @@ const styles = StyleSheet.create({
 	},
 	inputError: {
 		borderColor: '#d73a4a',
-	},
-	textError: {
-		color: '#d73a4a',
 	},
 })
 
@@ -53,7 +51,7 @@ const SignIn = () => {
 						]}
 					/>
 					{errors.username && (
-						<Text style={styles.textError}>{errors.username}</Text>
+						<Text color="error" font="small">{errors.username}</Text>
 					)}
 				</View>
 				<View style={{ marginBottom: 10 }}>
@@ -68,7 +66,7 @@ const SignIn = () => {
 						]}
 					/>
 					{errors.password && (
-						<Text style={styles.textError}>{errors.password}</Text>
+						<Text color="error" font="small">{errors.password}</Text>
 					)}
 				</View>
 				<Button onPress={handleSubmit} title="Sign In" />

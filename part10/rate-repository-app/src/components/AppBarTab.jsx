@@ -1,19 +1,12 @@
-import { StyleSheet, Text, View } from 'react-native';
-import theme from '../theme';
+import { View } from 'react-native';
 import { Link } from 'react-router-native';
-
-const styles = StyleSheet.create({
-	text: {
-		fontWeight: 'bold',
-		color: theme.colors.barText,
-	},
-});
+import Text from './Text';
 
 const AppBarTab = ({ content, endpoint }) => {
 	return (
 		<View>
 			<Link to={endpoint}>
-				<Text style={styles.text}>{content}</Text>
+				<Text color="white" textWeight="bold" >{content}</Text>
 			</Link>
 		</View>
 	)

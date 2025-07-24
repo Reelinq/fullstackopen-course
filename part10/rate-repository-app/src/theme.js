@@ -4,15 +4,21 @@ const theme = {
 		barText: '#ffffff',
 		mainBackground: '#e1e4e8',
 		itemBackground: '#ffffff',
-		textPrimary: '#24292e',
-		textSecondary: '#586069',
 	},
-	textFont: {
-		smallText: 16,
-		normalText: 18,
-	},
-	textWeight: {
-		boldText: 'bold',
+	text: {
+		color: {
+			primary: '#24292e',
+			secondary: '#586069',
+			error: '#d73a4a',
+			white: '#ffffff',
+		},
+		font: {
+			small: 16,
+			normal: 18,
+		},
+		weight: {
+			bold: 'bold',
+		},
 	},
 	position: {
 		spaceAroundHorisontalFlex: {
