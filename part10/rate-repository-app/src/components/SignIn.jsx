@@ -4,6 +4,7 @@ import Text from './Text';
 import theme from '../theme'
 import * as yup from 'yup';
 import useSignIn from '../hooks/useSignIn';
+import AuthStorage from '../utils/authStorage';
 
 const validationSchema = yup.object().shape({
 	username: yup
@@ -37,7 +38,8 @@ const SignIn = () => {
 
 		try {
 			const { data } = await signIn({ username, password });
-			console.log(data);
+			const authStorage = new AuthStorage();
+			authStorage.setAccessToken(data.authenticate.accessToken);
 		} catch (e) {
 			console.log(e);
 		}
