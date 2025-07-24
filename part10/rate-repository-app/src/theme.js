@@ -3,7 +3,7 @@ const theme = {
 		bar: '#24292e',
 		barText: '#ffffff',
 		mainBackground: '#e1e4e8',
-		repositoryItemBackground: '#ffffff',
+		itemBackground: '#ffffff',
 		textPrimary: '#24292e',
 		textSecondary: '#586069',
 	},
@@ -39,6 +39,15 @@ const theme = {
 			alignSelf: 'flex-start',
 		},
 	},
+	forms: {
+		input: {
+			borderWidth: 1,
+			borderColor: '#586069',
+			padding: 10,
+			borderRadius: 5,
+			marginBottom: 10,
+		}
+	}
 }
 
 export default theme;

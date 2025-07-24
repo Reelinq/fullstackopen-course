@@ -6,7 +6,7 @@ import RepositoryItemImage from './RepositoryItemImage'
 
 const styles = StyleSheet.create({
 	repositoryItem: {
-		backgroundColor: theme.colors.repositoryItemBackground,
+		backgroundColor: theme.colors.itemBackground,
 		padding: 15,
 	},
 	imageInfoContainer: {
