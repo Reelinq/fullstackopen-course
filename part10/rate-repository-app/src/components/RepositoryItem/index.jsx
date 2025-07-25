@@ -11,10 +11,7 @@ const styles = StyleSheet.create({
 		padding: 15,
 	},
 	imageInfoContainer: {
-		display: 'flex',
-		flexDirection: 'row',
-		alignItems: 'flex-start',
-		gap: 15,
+		...theme.position.unEvenFlexStart,
 		marginBottom: 15,
 	},
 	githubButton: {

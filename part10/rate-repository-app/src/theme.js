@@ -4,6 +4,7 @@ const theme = {
 		barText: '#ffffff',
 		mainBackground: '#e1e4e8',
 		itemBackground: '#ffffff',
+		blue: '#0366d6',
 	},
 	text: {
 		color: {
@@ -13,6 +14,7 @@ const theme = {
 			white: '#ffffff',
 		},
 		font: {
+			ultraSmall: 14,
 			small: 16,
 			normal: 18,
 		},
@@ -27,6 +29,12 @@ const theme = {
 			alignItems: 'center',
 			justifyContent: 'space-around',
 		},
+		unEvenFlexStart: {
+			display: 'flex',
+			flexDirection: 'row',
+			alignItems: 'flex-start',
+			gap: 15,
+		}
 	},
 	images: {
 		smallRoundedImage: {
@@ -52,6 +60,17 @@ const theme = {
 			padding: 6,
 			fontSize: 14,
 			alignSelf: 'flex-start',
+		},
+		ratingBadge: {
+			width: 50,
+			height: 50,
+			borderRadius: 25,
+			backgroundColor: '#ffffff',
+			borderWidth: 2,
+			borderColor: '#0366d6',
+			justifyContent: 'center',
+			alignItems: 'center',
+			flexShrink: 0,
 		},
 	},
 	forms: {
