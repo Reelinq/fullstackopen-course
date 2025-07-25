@@ -88,3 +88,12 @@ export const ADD_REVIEW = gql`
 		}
 	}
 `;
+
+export const ADD_USER = gql`
+	mutation Mutation($user: CreateUserInput) {
+		createUser(user: $user) {
+			username
+			id
+		}
+	}
+`;

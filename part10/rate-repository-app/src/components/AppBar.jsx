@@ -52,7 +52,10 @@ const AppBar = () => {
 								</Pressable>
 							</>
 						) : (
-							<AppBarTab content="Sign In" endpoint="/signin" style={styles.item} />
+							<>
+								<AppBarTab content="Sign In" endpoint="/signin" style={styles.item} />
+								<AppBarTab content="Sign Up" endpoint="/signup" style={styles.item} />
+							</>
 						)}
 					</View>
 				</ScrollView>
