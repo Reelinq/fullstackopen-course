@@ -7,6 +7,7 @@ import { CHECK_USER } from '../graphql/queries';
 import useAuthStorage from '../hooks/useAuthStorage';
 import { Pressable } from 'react-native';
 import Text from './Text';
+import { useNavigate } from 'react-router-native';
 
 const styles = StyleSheet.create({
 	container: {
@@ -23,6 +24,8 @@ const styles = StyleSheet.create({
 });
 
 const AppBar = () => {
+	const navigate = useNavigate();
+
 	const { data } = useQuery(CHECK_USER, {
 		fetchPolicy: 'cache-and-network',
 	});
@@ -32,6 +35,7 @@ const AppBar = () => {
 	const onSignOut = async () => {
 		await authStorage.removeAccessToken()
 		await apolloClient.resetStore()
+		navigate('/');
 	}
 
 	return (
@@ -41,9 +45,12 @@ const AppBar = () => {
 					<View style={styles.contentContainer}>
 						<AppBarTab content={"Repositories"} endpoint={'/'} style={styles.item} />
 						{data?.me ? (
-							<Pressable onPress={onSignOut}>
-								<Text color="white" textWeight="bold">Sign Out</Text>
-							</Pressable>
+							<>
+								<AppBarTab content="Create a review" endpoint="/createreview" style={styles.item} />
+								<Pressable onPress={onSignOut}>
+									<Text color="white" textWeight="bold">Sign Out</Text>
+								</Pressable>
+							</>
 						) : (
 							<AppBarTab content="Sign In" endpoint="/signin" style={styles.item} />
 						)}

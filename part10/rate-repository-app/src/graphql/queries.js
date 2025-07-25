@@ -71,3 +71,20 @@ export const GET_REPO = gql`
 		}
 	}
 `;
+
+export const ADD_REVIEW = gql`
+	mutation Mutation($review: CreateReviewInput) {
+		createReview(review: $review) {
+			id
+			rating
+			repository {
+				id
+				fullName
+			}
+			text
+			user {
+				username
+			}
+		}
+	}
+`;
