@@ -1,3 +1,5 @@
+import { Searchbar } from "react-native-paper";
+
 const theme = {
 	colors: {
 		bar: '#24292e',
@@ -79,6 +81,14 @@ const theme = {
 			borderColor: '#586069',
 			padding: 10,
 			borderRadius: 5,
+		},
+		Searchbar: {
+			backgroundColor: '#ffffff',
+			borderRadius: 10,
+			elevation: 0,
+			shadowOpacity: 0,
+			borderWidth: 1,
+			borderColor: '#d0d7de',
 		}
 	}
 }
