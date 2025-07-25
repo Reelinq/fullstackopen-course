@@ -17,6 +17,7 @@ export default [
 			react: eslintPluginReact,
 			'react-native': eslintPluginReactNative,
 		},
+		extends: ["eslint:recommended", "plugin:react/recommended", "plugin:jest/recommended"],
 		settings: {
 			react: {
 				version: 'detect',

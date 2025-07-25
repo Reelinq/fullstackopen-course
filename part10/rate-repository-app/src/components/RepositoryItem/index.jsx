@@ -19,7 +19,7 @@ const styles = StyleSheet.create({
 })
 
 const RepositoryItem = ({ item }) => (
-	<View style={styles.repositoryItem}>
+	<View testID="repositoryItem" style={styles.repositoryItem}>
 		<View style={styles.imageInfoContainer}>
 			<RepositoryItemImage avatarUrl={item.ownerAvatarUrl} />
 			<RepositoryItemInfo fullName={item.fullName} description={item.description} language={item.language} />
