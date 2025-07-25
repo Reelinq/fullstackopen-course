@@ -23,12 +23,51 @@ const styles = StyleSheet.create({
 		backgroundColor: theme.colors.itemBackground
 	},
 	input: {
-		...theme.forms.input
+		...theme.forms.input,
 	},
 	inputError: {
 		borderColor: '#d73a4a',
 	},
 })
+
+export const SignInContainer = ({ onSubmit }) => {
+	return (
+		<Formik
+			initialValues={{ username: '', password: '' }}
+			validationSchema={validationSchema}
+			onSubmit={onSubmit}
+		>
+			{({ handleChange, handleSubmit, values, errors }) => (
+				<View style={styles.container}>
+					<View style={{ marginBottom: 15 }}>
+						<TextInput
+							style={[styles.input, errors.username && styles.inputError]}
+							placeholder="Username"
+							value={values.username}
+							onChangeText={handleChange('username')}
+						/>
+						{errors.username && (
+							<Text style={{ color: '#d73a4a' }}>{errors.username}</Text>
+						)}
+					</View>
+					<View style={{ marginBottom: 15 }}>
+						<TextInput
+							style={[styles.input, errors.password && styles.inputError]}
+							placeholder="Password"
+							value={values.password}
+							onChangeText={handleChange('password')}
+							secureTextEntry
+						/>
+						{errors.password && (
+							<Text style={{ color: '#d73a4a' }}>{errors.password}</Text>
+						)}
+					</View>
+					<Button title="SIGN IN" onPress={handleSubmit} />
+				</View>
+			)}
+		</Formik>
+	)
+}
 
 const SignIn = () => {
 	const [signIn] = useSignIn();
@@ -45,47 +84,7 @@ const SignIn = () => {
 		}
 	};
 
-	return (
-		<Formik
-			initialValues={{ username: '', password: '' }}
-			validationSchema={validationSchema}
-			onSubmit={onSubmit}
-		>{({ handleChange, handleSubmit, values, errors }) => (
-			<View style={styles.container}>
-				<View style={{ marginBottom: 10 }}>
-					<TextInput
-						placeholder="Username"
-						value={values.username}
-						onChangeText={handleChange('username')}
-						style={[
-							styles.input,
-							errors.username && styles.inputError,
-						]}
-					/>
-					{errors.username && (
-						<Text color="error" font="small">{errors.username}</Text>
-					)}
-				</View>
-				<View style={{ marginBottom: 10 }}>
-					<TextInput
-						placeholder="Password"
-						value={values.password}
-						onChangeText={handleChange('password')}
-						secureTextEntry
-						style={[
-							styles.input,
-							errors.password && styles.inputError,
-						]}
-					/>
-					{errors.password && (
-						<Text color="error" font="small">{errors.password}</Text>
-					)}
-				</View>
-				<Button onPress={handleSubmit} title="Sign In" />
-			</View>
-		)}
-		</Formik>
-	)
+	return <SignInContainer onSubmit={onSubmit} />
 }
 
 export default SignIn

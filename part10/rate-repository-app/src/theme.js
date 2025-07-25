@@ -35,6 +35,15 @@ const theme = {
 			borderRadius: 8,
 		},
 	},
+	buttons: {
+		defaultButton: {
+			backgroundColor: '#0366d6',
+			padding: 15,
+			borderRadius: 5,
+			alignItems: 'center',
+			marginTop: 15,
+		},
+	},
 	badges: {
 		languageBadge: {
 			color: '#ffffff',
