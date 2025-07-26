@@ -17,7 +17,7 @@ jobs:
         run: npm install
         working-directory: ./part11/pokedex
       - name: Install Playwright browsers
-        run: npx playwright install
+        run: npx playwright install --with-deps
         working-directory: ./part11/pokedex
       - name: lint
         run: npm run eslint
