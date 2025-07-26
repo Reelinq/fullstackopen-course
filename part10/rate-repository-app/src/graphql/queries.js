@@ -43,6 +43,7 @@ export const USER = gql`
 						id
 						rating
 						repository {
+							id
 							fullName
 						}
 						text
@@ -108,5 +109,11 @@ export const ADD_USER = gql`
 			username
 			id
 		}
+	}
+`;
+
+export const DELETE_REVIEW = gql`
+	mutation Mutation($deleteReviewId: ID!) {
+		deleteReview(id: $deleteReviewId)
 	}
 `;

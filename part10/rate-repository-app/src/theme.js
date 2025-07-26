@@ -1,5 +1,3 @@
-import { Searchbar } from "react-native-paper";
-
 const theme = {
 	colors: {
 		bar: '#24292e',
@@ -48,6 +46,13 @@ const theme = {
 	buttons: {
 		defaultButton: {
 			backgroundColor: '#0366d6',
+			padding: 15,
+			borderRadius: 5,
+			alignItems: 'center',
+			marginTop: 15,
+		},
+		redButton: {
+			backgroundColor: '#d73a4a',
 			padding: 15,
 			borderRadius: 5,
 			alignItems: 'center',

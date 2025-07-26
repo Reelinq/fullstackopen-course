@@ -1,7 +1,7 @@
 import { USER } from '../graphql/queries';
 import { useQuery } from '@apollo/client';
 
-const useUserReviews = (id) => {
+const useUserReviews = () => {
 	const { data, error, loading, refetch } = useQuery(USER, {
 		variables: { includeReviews: true },
 		fetchPolicy: 'cache-and-network',
