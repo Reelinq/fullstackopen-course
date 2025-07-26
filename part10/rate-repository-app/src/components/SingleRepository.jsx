@@ -52,7 +52,11 @@ const ItemSeparator = () => <View style={styles.separator} />
 
 const SingleRepository = () => {
 	const { id } = useParams()
-	const { repo } = useRepo(id)
+	const { repo, fetchMore } = useRepo(id, 5)
+
+	const onEndReached = () => {
+		fetchMore();
+	};
 
 	if (!repo) return
 
@@ -64,6 +68,8 @@ const SingleRepository = () => {
 			ItemSeparatorComponent={ItemSeparator}
 			keyExtractor={(item) => item.node.id}
 			ListHeaderComponent={() => <RepositoryInfo repo={repo} />}
+			onEndReached={onEndReached}
+			onEndReachedThreshold={0.5}
 		/>
 	)
 }

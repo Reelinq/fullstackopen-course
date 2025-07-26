@@ -83,6 +83,8 @@ export class RepositoryListContainer extends React.Component {
 						<RepositoryItem item={item} />
 					</Link>
 				)}
+				onEndReached={this.props.onEndReach}
+				onEndReachedThreshold={0.5}
 			/>
 		);
 	}
@@ -103,10 +105,15 @@ const RepositoryList = () => {
 	};
 
 	const sortingParams = getSortingParams(selectedSorting);
-	const { repositories } = useRepositories({
+	const { repositories, fetchMore } = useRepositories({
+		first: 8,
 		...sortingParams,
 		searchKeyword: debouncedSearchQuery
 	});
+
+	const onEndReach = () => {
+		fetchMore();
+	};
 
 	return (
 		<RepositoryListContainer
@@ -115,6 +122,7 @@ const RepositoryList = () => {
 			setSelectedSorting={setSelectedSorting}
 			searchQuery={searchQuery}
 			setSearchQuery={setSearchQuery}
+			onEndReach={onEndReach}
 		/>
 	)
 };
