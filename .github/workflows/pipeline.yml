@@ -53,3 +53,28 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DEFAULT_BUMP: patch
 
+  notify_success:
+    needs: [simple_deployment_pipeline, tag_release]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Success notification
+        uses: rjstone/discord-webhook-notify@v2.2.1
+        if: ${{ success() && env.SKIP_DEPLOYMENT == 'false' }}
+        with:
+          severity: info
+          text: "A new version of Pokedex deployed"
+          description: "to https://fullstackopen-course-pqsy.onrender.com by ${{ github.actor }}"
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
+
+  notify_failure:
+    needs: [simple_deployment_pipeline, tag_release]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Failure notification
+        uses: rjstone/discord-webhook-notify@v2.2.1
+        if: ${{ failure() && env.SKIP_DEPLOYMENT == 'false' }}
+        with:
+          severity: error
+          text: "Build failed"
+          description: "${{ github.event.head_commit.url }} by ${{ github.actor }} broke the build :("
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
