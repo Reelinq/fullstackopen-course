@@ -69,11 +69,14 @@ jobs:
   notify_failure:
     needs: [simple_deployment_pipeline, tag_release]
     runs-on: ubuntu-latest
-    if: always()
+    if: >
+      always() &&
+      (needs.simple_deployment_pipeline.result == 'failure' ||
+      needs.tag_release.result == 'failure') &&
+      github.event_name == 'push'
     steps:
       - name: Failure notification
         uses: rjstone/discord-webhook-notify@v2.2.1
-        if: ${{ (needs.simple_deployment_pipeline.result == 'failure' || needs.tag_release.result == 'failure') && github.event_name == 'push' }}
         with:
           severity: error
           text: "Build failed"
