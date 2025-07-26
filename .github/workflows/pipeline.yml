@@ -72,7 +72,7 @@ jobs:
     steps:
       - name: Failure notification
         uses: rjstone/discord-webhook-notify@v2.2.1
-        if: ${{ failure() && env.SKIP_DEPLOYMENT == 'false' }}
+        if: ${{ always() && (needs.simple_deployment_pipeline.result == 'failure' || needs.tag_release.result == 'failure') && github.event_name == 'push' }}
         with:
           severity: error
           text: "Build failed"
