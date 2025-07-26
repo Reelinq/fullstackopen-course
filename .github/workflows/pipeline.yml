@@ -19,3 +19,9 @@ jobs:
       - name: lint
         run: npm run eslint
         working-directory: ./part11/pokedex
+      - name: build
+        run: npm run build
+        working-directory: ./part11/pokedex
+      - name: test
+        run: npm run test
+        working-directory: ./part11/pokedex
