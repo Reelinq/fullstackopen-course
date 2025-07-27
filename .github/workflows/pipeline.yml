@@ -76,5 +76,5 @@ jobs:
         with:
           severity: error
           text: "Pokedex deployment failed"
-          description: "Commit ${{ github.sha }} by ${{ github.actor }} broke the build"
+          description: "${{ github.event.head_commit.url }} by ${{ github.actor }} broke the build :("
           webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
