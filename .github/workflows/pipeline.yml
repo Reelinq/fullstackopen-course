@@ -19,24 +19,24 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
-      # - name: Install dependencies
-      #   run: npm install
-      #   working-directory: ./part11/pokedex
-      # - name: Install Playwright browsers
-      #   run: npx playwright install --with-deps
-      #   working-directory: ./part11/pokedex
-      # - name: lint
-      #   run: npm run eslint
-      #   working-directory: ./part11/pokedex
-      # - name: build
-      #   run: npm run build
-      #   working-directory: ./part11/pokedex
-      # - name: test
-      #   run: npm run test
-      #   working-directory: ./part11/pokedex
-      # - name: e2e-test
-      #   run: npm run test:e2e
-      #   working-directory: ./part11/pokedex
+      - name: Install dependencies
+        run: npm install
+        working-directory: ./part11/pokedex
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
+        working-directory: ./part11/pokedex
+      - name: lint
+        run: npm run eslint
+        working-directory: ./part11/pokedex
+      - name: build
+        run: npm run build
+        working-directory: ./part11/pokedex
+      - name: test
+        run: npm run test
+        working-directory: ./part11/pokedex
+      - name: e2e-test
+        run: npm run test:e2e
+        working-directory: ./part11/pokedex
       - name: Trigger deployment
         run: curl https://api.render.com/deploy/srv-${{ secrets.RENDER_SERVICE_ID }}?key=${{ secrets.RENDER_API_KEY }}
         if: ${{ env.SKIP_DEPLOYMENT == 'false' }}
