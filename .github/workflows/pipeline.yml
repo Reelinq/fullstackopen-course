@@ -4,9 +4,13 @@ on:
   push:
     branches:
       - main
+    paths:
+      - 'part11/pokedex/**'
   pull_request:
     branches: [main]
     types: [opened, synchronize]
+    paths:
+      - 'part11/pokedex/**'
 
 env:
   SKIP_DEPLOYMENT: ${{ github.event_name == 'push' && contains(join(github.event.commits.*.message, ' '), '#skip') }}
