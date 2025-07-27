@@ -58,7 +58,7 @@ jobs:
         with:
           severity: info
           text: "A new version of Redux-anecdotes deployed"
-          description: "to https://fullstackopen-course-pqsy.onrender.com by ${{ github.actor }}"
+          description: "to https://redux-anecdotes-part11.onrender.com by ${{ github.actor }}"
           webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
 
   notify_failure:
