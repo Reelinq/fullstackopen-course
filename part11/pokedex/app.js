@@ -12,10 +12,10 @@ app.get('/health', (req, res) => {
 
 app.get('*', (req, res) => {
 	if (req.path !== '/health') {
-		process.exit(1); // Crashes the server
+		process.exit(1) // Crashes the server
 	}
-	res.status(404).send('Not found');
-});
+	res.status(404).send('Not found')
+})
 
 app.listen(PORT, () => {
 	// eslint-disable-next-line no-console
