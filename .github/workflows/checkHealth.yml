@@ -12,7 +12,7 @@ jobs:
       - name: Check application health
         uses: Jtalk/url-health-check-action@v4
         with:
-          url: https://fullstackopen-course-pqsy.onrender.com/health
+          url: https://fullstackopen-course-pqsy.onrender.com
           max-attempts: 3
           retry-delay: 10s
           follow-redirect: true
