@@ -75,6 +75,6 @@ jobs:
         uses: rjstone/discord-webhook-notify@v2.2.1
         with:
           severity: error
-          text: "Pokedex deployment failed"
-          description: "${{ github.event.head_commit.url }} by ${{ github.actor }} broke the build :("
+          text: "Pokedex build failed"
+          description: "commit ${{ github.event.head_commit.url }} by ${{ github.actor }} broke the build :("
           webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
