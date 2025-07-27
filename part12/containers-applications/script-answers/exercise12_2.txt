@@ -1,0 +1,18 @@
+Script started on 2025-07-27 16:41:41+03:00 [TERM="xterm-256color" TTY="/dev/pts/4" COLUMNS="120" LINES="30"]
+To run a command as administrator (user "root"), use "sudo <command>".
+See "man sudo_root" for details.
+
+reelin@DESKTOP-6LJTCV5:~$ docker run -it ubuntu bash
+Unable to find image 'ubuntu:latest' locally
+latest: Pulling from library/ubuntu
+32f112e3802c: Pull complete
+Digest: sha256:a08e551cb33850e4740772b38217fc1796a66da2506d312abe51acda354ff061
+Status: Downloaded newer image for ubuntu:latest
+root@f6b5306b4a61:/# mkdir -p /usr/src/app
+root@f6b5306b4a61:/# touch /usr/src/app/index.js
+root@f6b5306b4a61:/# exit
+exit
+reelin@DESKTOP-6LJTCV5:~$ exit
+exit
+
+Script done on 2025-07-27 16:44:58+03:00 [COMMAND_EXIT_CODE="0"]
