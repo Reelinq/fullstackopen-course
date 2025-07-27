@@ -1,0 +1,75 @@
+name: Deployment pipeline
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'part11/redux-anecdotes/**'
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize]
+    paths:
+      - 'part11/redux-anecdotes/**'
+
+env:
+  SKIP_DEPLOYMENT: ${{ github.event_name == 'push' && contains(join(github.event.commits.*.message, ' '), '#skip') }}
+
+jobs:
+  redux_anecdotes_pipeline:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install dependencies
+        run: npm install
+        working-directory: ./part11/redux-anecdotes
+      - name: lint
+        run: npm run lint
+        working-directory: ./part11/redux-anecdotes
+      - name: build
+        run: npm run build
+        working-directory: ./part11/redux-anecdotes
+      - name: Trigger deployment
+        run: curl https://api.render.com/deploy/srv-${{ secrets.REDUX_ANECDOTES_RENDER_SERVICE_ID }}?key=${{ secrets.REDUX_ANECDOTES_RENDER_API_KEY }}
+        if: ${{ env.SKIP_DEPLOYMENT == 'false' }}
+
+  tag_release:
+    needs: [redux_anecdotes_pipeline]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Bump version and push tag
+        uses: anothrNick/github-tag-action@1.73.0
+        if: ${{ env.SKIP_DEPLOYMENT == 'false' }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DEFAULT_BUMP: patch
+
+  notify_success:
+    needs: [redux_anecdotes_pipeline, tag_release]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Success notification
+        uses: rjstone/discord-webhook-notify@v2.2.1
+        if: ${{ success() && env.SKIP_DEPLOYMENT == 'false' }}
+        with:
+          severity: info
+          text: "A new version of Redux-anecdotes deployed"
+          description: "to https://fullstackopen-course-pqsy.onrender.com by ${{ github.actor }}"
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
+
+  notify_failure:
+    needs: [redux_anecdotes_pipeline, tag_release]
+    runs-on: ubuntu-latest
+    if: ${{ always() && (needs.redux_anecdotes_pipeline.result == 'failure' || needs.tag_release.result == 'failure') }}
+    steps:
+      - name: Error notification
+        uses: rjstone/discord-webhook-notify@v2.2.1
+        with:
+          severity: error
+          text: "Redux-anecdotes build failed"
+          description: "commit ${{ github.event.head_commit.url }} by ${{ github.actor }} broke the build :("
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
