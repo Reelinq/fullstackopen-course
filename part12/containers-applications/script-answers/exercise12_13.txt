@@ -1,0 +1,40 @@
+Script started on 2025-07-28 16:03:46+03:00 [TERM="xterm-256color" TTY="/dev/pts/3" COLUMNS="168" LINES="30"]
+reelin@DESKTOP-6LJTCV5:~/todo-app/todo-frontend$ ls
+Dockerfile  README.md  dist  index.html  node_modules  package-lock.json  package.json  public  src  typescript  vite.config.js
+reelin@DESKTOP-6LJTCV5:~/todo-app/todo-frontend$ nano Dockerfile
+reelin@DESKTOP-6LJTCV5:~/todo-app/todo-frontend$ docker build . -t todo-front
+[+] Building 156.2s (10/10) FINISHED                                                                                                                     docker:default
+ => [internal] load build definition from Dockerfile                                                                                                               0.0s
+ => => transferring dockerfile: 157B                                                                                                                               0.0s
+ => [internal] load metadata for docker.io/library/node:20                                                                                                         0.4s
+ => [internal] load .dockerignore                                                                                                                                  0.0s
+ => => transferring context: 2B                                                                                                                                    0.0s
+ => [1/5] FROM docker.io/library/node:20@sha256:2c071012e93673d595e1399564c4a48a70a5c0a0acd7db8211d5e6f6316b431a                                                   0.0s
+ => => resolve docker.io/library/node:20@sha256:2c071012e93673d595e1399564c4a48a70a5c0a0acd7db8211d5e6f6316b431a                                                   0.0s
+ => [internal] load build context                                                                                                                                  0.4s
+ => => transferring context: 551.42kB                                                                                                                              0.4s
+ => CACHED [2/5] WORKDIR /usr/src/app                                                                                                                              0.0s
+ => [3/5] COPY . .                                                                                                                                                 1.9s
+ => [4/5] RUN npm ci                                                                                                                                             142.6s
+ => [5/5] RUN npm run build                                                                                                                                        1.9s
+ => exporting to image                                                                                                                                             8.8s
+ => => exporting layers                                                                                                                                            4.0s
+ => => exporting manifest sha256:b83a250f973d48242d22f6cda8009c109486cbf1e283d71e3501d6a3d5ee4150                                                                  0.0s
+ => => exporting config sha256:3e6628bffb652459f1cc1480bb799cc0deb946f97e4d65420bcb18ad7aab96e3                                                                    0.0s
+ => => exporting attestation manifest sha256:8046be2804d5190c81eccd2702e0d1fee552e02c5363086ebcbcd0e1e246e153                                                      0.0s
+ => => exporting manifest list sha256:ea7de184460ec609b17a3b94e84cf86fe5a80eff00d44dca5198590ce8be8729                                                             0.0s
+ => => naming to docker.io/library/todo-front:latest                                                                                                               0.0s
+ => => unpacking to docker.io/library/todo-front:latest                                                                                                            4.7s
+reelin@DESKTOP-6LJTCV5:~/todo-app/todo-frontend$ docker run -p 5001:3000 todo-front
+
+> todo-frontend@0.0.0 preview
+> vite preview
+
+  ➜  Local:   http://localhost:4173/
+  ➜  Network: use --host to expose
+^C^Cexit
+
+reelin@DESKTOP-6LJTCV5:~/todo-app/todo-frontend$ exit
+exit
+
+Script done on 2025-07-28 16:08:29+03:00 [COMMAND_EXIT_CODE="137"]
