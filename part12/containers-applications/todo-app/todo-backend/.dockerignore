@@ -1,0 +1,14 @@
+node_modules
+npm-debug.log
+mongo_data
+redis_data
+.git
+.gitignore
+README.md
+Dockerfile
+.env
+.nyc_output
+coverage
+.nyc_output
+.coverage
+.coverage/

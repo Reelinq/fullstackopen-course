@@ -12,7 +12,7 @@ router.get('/', async (req, res) => {
 
 	res.send({
 		...configs,
-		visits
+		visits 
 	});
 });
 
@@ -25,3 +25,4 @@ router.get('/statistics', async (req, res) => {
 })
 
 module.exports = router;
+
