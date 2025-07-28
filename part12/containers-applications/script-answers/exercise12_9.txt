@@ -1,0 +1,27 @@
+Script started on 2025-07-28 10:15:26+03:00 [TERM="xterm-256color" TTY="/dev/pts/8" COLUMNS="195" LINES="30"]
+reelin@DESKTOP-6LJTCV5:~/todo-app/todo-backend$ nano docker-compose.dev.yml
+reelin@DESKTOP-6LJTCV5:~/todo-app/todo-backend$ docker compose -f docker-compose.dev.yml up -d
+WARN[0000] Found orphan containers ([todo-backend-app-1]) for this project. If you removed or renamed this service in your compose file, you can run this command with the --remove-orphans flag to clean it up.
+[+] Running 2/2
+ ✔ Container todo-backend-mongo-1  Running                                                                                                                                                    0.0s
+ ✔ Container todo-backend-redis-1  Running                                                                                                                                                    0.0s
+reelin@DESKTOP-6LJTCV5:~/todo-app/todo-backend$ cd routes/
+reelin@DESKTOP-6LJTCV5:~/todo-app/todo-backend/routes$ nano index.js
+reelin@DESKTOP-6LJTCV5:~/todo-app/todo-backend/routes$ cd ..
+reelin@DESKTOP-6LJTCV5:~/todo-app/todo-backend$ REDIS_URL=redis://localhost:6379 MONGO_URL=mongodb://the_username:the_password@localhost:3456/the_database npm run dev
+
+> todo-express-backend@0.0.0 dev
+> nodemon ./bin/www
+
+[nodemon] 2.0.12
+[nodemon] to restart at any time, enter `rs`
+[nodemon] watching path(s): *.*
+[nodemon] watching extensions: js,mjs,json
+[nodemon] starting `node ./bin/www`
+GET /todos 304 51.317 ms - -
+exit
+^C
+reelin@DESKTOP-6LJTCV5:~/todo-app/todo-backend$ exit
+exit
+
+Script done on 2025-07-28 10:17:22+03:00 [COMMAND_EXIT_CODE="130"]
