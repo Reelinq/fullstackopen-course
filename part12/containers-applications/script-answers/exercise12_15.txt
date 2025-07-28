@@ -1,0 +1,13 @@
+Script started on 2025-07-28 19:54:23+03:00 [TERM="xterm-256color" TTY="/dev/pts/3" COLUMNS="211" LINES="50"]
+reelin@DESKTOP-6LJTCV5:~/todo-app/todo-frontend$ nano docker.compsoe.dev.yml
+reelin@DESKTOP-6LJTCV5:~/todo-app/todo-frontend$ nano docker-compose.dev.yml
+reelin@DESKTOP-6LJTCV5:~/todo-app/todo-frontend$ ls
+Dockerfile  dev.Dockerfile  docker-compose.dev.yml  node_modules       package.json  setupTests.js  todo-frontend@0.0.0  vite            vitest.config.js
+README.md   dist            index.html              package-lock.json  public        src            typescript           vite.config.js
+reelin@DESKTOP-6LJTCV5:~/todo-app/todo-frontend$ docker compose -f docker-compose.dev.yml up -d
+[+] Running 1/1
+ ✔ Container todo-front-dev  Started                                                                                                                                                                          0.3s
+reelin@DESKTOP-6LJTCV5:~/todo-app/todo-frontend$ exit
+exit
+
+Script done on 2025-07-28 19:55:10+03:00 [COMMAND_EXIT_CODE="0"]
