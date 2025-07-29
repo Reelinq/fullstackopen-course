@@ -1,0 +1,23 @@
+services:
+  nginx:
+    image: nginx:1.20.1
+    volumes:
+      - ./nginx.dev.conf:/etc/nginx/nginx.conf:ro
+    ports:
+      - 8080:80
+    container_name: nginx-proxy
+    depends_on:
+      - bloglist-frontend
+      - bloglist-backend
+
+  bloglist-frontend:
+    build:
+      context: ./bloglist-frontend
+      dockerfile: Dockerfile
+
+  bloglist-backend:
+    build:
+      context: ./bloglist-backend
+      dockerfile: Dockerfile
+    environment:
+      - MONGO_URL=${MONGO_URL}
