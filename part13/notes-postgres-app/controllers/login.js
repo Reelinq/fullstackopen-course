@@ -3,9 +3,10 @@ const router = require('express').Router()
 
 const { SECRET } = require('../util/config')
 const User = require('../models/user')
+const { Session } = require('../models')
 
-router.post('/', async (request, response) => {
-	const body = request.body
+router.post('/', async (req, res) => {
+	const body = req.body
 
 	const user = await User.findOne({
 		where: {
@@ -16,9 +17,13 @@ router.post('/', async (request, response) => {
 	const passwordCorrect = body.password === 'secret'
 
 	if (!(user && passwordCorrect)) {
-		return response.status(401).json({
+		return res.status(401).json({
 			error: 'invalid username or password'
 		})
+	}
+
+	if (user.disabled) {
+		return res.status(403).json({ error: 'user disabled' });
 	}
 
 	const userForToken = {
@@ -28,9 +33,11 @@ router.post('/', async (request, response) => {
 
 	const token = jwt.sign(userForToken, SECRET)
 
-	response
+	await Session.create({ token, user_id: user.id });
+
+	res
 		.status(200)
-		.send({ token, username: user.username, name: user.name })
+		.send({ token, username: user.username, name: user.name });
 })
 
 module.exports = router
