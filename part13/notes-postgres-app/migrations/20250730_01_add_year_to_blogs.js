@@ -7,10 +7,6 @@ module.exports = {
 		await queryInterface.addColumn('blogs', 'year', {
 			type: DataTypes.INTEGER,
 			defaultValue: currentYear,
-			validate: {
-				min: 1991,
-				max: currentYear
-			}
 		})
 	},
 

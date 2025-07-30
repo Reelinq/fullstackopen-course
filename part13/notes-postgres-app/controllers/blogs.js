@@ -4,8 +4,6 @@ const { Op } = require('sequelize')
 
 const { Blog, User } = require('../models')
 
-
-
 router.get('/', async (req, res) => {
 	const where = {}
 	if (req.query.search) {
@@ -15,7 +13,7 @@ router.get('/', async (req, res) => {
 		]
 	}
 	const blogs = await Blog.findAll({
-		attributes: { exclude: ['userId'] },
+		attributes: { exclude: ['userId', 'user_id'] },
 		include: {
 			model: User
 		},

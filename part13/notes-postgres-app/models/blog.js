@@ -32,6 +32,11 @@ Blog.init({
 			min: 1991,
 			max: new Date().getFullYear()
 		}
+	},
+	userId: {
+		type: DataTypes.INTEGER,
+		allowNull: false,
+		field: 'user_id',
 	}
 }, {
 	sequelize,

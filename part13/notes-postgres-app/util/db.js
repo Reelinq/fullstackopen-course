@@ -10,11 +10,9 @@ const connectToDatabase = async () => {
 		await runMigrations()
 		console.log('connected to the database')
 	} catch (err) {
-		console.log('failed to connect to the database')
-		return process.exit(1)
+		console.error('failed to connect to the database:', err)
+		process.exit(1)
 	}
-
-	return null
 }
 
 const migrationConf = {
