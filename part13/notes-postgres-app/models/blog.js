@@ -32,4 +32,4 @@ Blog.init({
 	modelName: 'blog'
 })
 
-module.exports = Note
+module.exports = Blog
