@@ -1,5 +1,6 @@
 const router = require('express').Router()
-const { ReadingList, User, Blog } = require('../models')
+const { ReadingList } = require('../models')
+const tokenExtractor = require('../middleware/tokenExtractor')
 
 router.post('/', async (req, res) => {
 	const { blogId, userId } = req.body
@@ -20,6 +21,32 @@ router.post('/', async (req, res) => {
 		})
 
 		res.status(201).json(result)
+	} catch (error) {
+		console.error(error)
+		res.status(500).json({ error: error.message })
+	}
+})
+
+router.put('/:id', tokenExtractor, async (req, res) => {
+	const { id } = req.params
+	const { read } = req.body
+	const userId = req.decodedToken.id
+
+	try {
+		const readingEntry = await ReadingList.findByPk(id)
+
+		if (!readingEntry) {
+			return res.status(404).json({ error: 'Reading list entry not found' })
+		}
+
+		if (readingEntry.user_id !== userId) {
+			return res.status(403).json({ error: 'You can only modify your own reading list entries' })
+		}
+
+		readingEntry.is_read = read
+		await readingEntry.save()
+
+		res.json(readingEntry)
 	} catch (error) {
 		console.error(error)
 		res.status(500).json({ error: error.message })
